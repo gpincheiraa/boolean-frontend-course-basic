@@ -1,17 +1,41 @@
-# Desarrollo Web Profesional parte I: Aplicación AngularJS con Testing y Javascript del futuro.
+# Boolean curso profesional de frontend nivel básico
 
-Bienvenido a la serie de Desarrollo Web Profesional parte I: El Front End. En esta serie de 4 artículos revisaremos brevemente conceptos importantes para desarrollar aplicaciones Front End de forma profesional. Lo haremos integrando herramientas simples, pero poderosas para construir un **proceso de desarrollo** que asegura comportamiento (muy útil para metodologías ágiles), calidad de código, escalabilidad, rendimiento e integración continua.
+Bienvenido al curso gratuito de desarrollo frontend profesional nivel básico. 
 
-En este primer artículo discutiremos acerca del enfoque orientado a componentes para desarrollar una app usando la metodología de desarrollo liderado por pruebas (TDD por sus siglas en inglés). También discutiremos el por qué no basta con estar en permanente actualización de los frameworks y librerías más populares, sino que es de suma importancia entender los conceptos transversales que aplican al desarrollo Front End profesional, los cuales muchas veces son consecuencia de nuevas funcionalidades y evolución del lenguaje JavaScript.
+El objetivo de este curso es dar una mirada completa sobre el proceso de desarollar una aplicación frontend utilizando el lenguaje *javascript*. 
+
+Las librerías utilizadas en este curso fueron seleccionadas no por ser las mejores ni las más populares, sino que por ser las que permitían ilustrar de mejor manera los conceptos escenciales de un proceso de desarollo orientado a la integración continua y los lanzamientos a producción tempranos.
+
+El proceso de desarrollo utilizado en este curso permite a quienes lo utilicen de la manera correcta, medir la calidad del código que se produce, la promoción de buenas prácticas e implementación de patrones de diseño, las pruebas automatizadas, la integración del código desarrollado en equipos distribuidos, el versionado del código y el proceso de gestión de tickets de incidencias o mejoras; todos estas ganancias traducidas finalmente en código más fácil de escalar y preparado para ser modificado en un futuro.
+
+Revisaremos de manera breve los conceptos importantes para seguir este proceso integrando herramientas simples pero poderosas de manera de lograr construir un proceso de desarrollo que asegure que el comportamiento que definimos que nuestro codigo debía tener, perdure en el tiempo sin importar las modificaciones que se hagan a futuro, y que de ser el caso en que algunos de estos comportamientos se vean corrompidos por la introducción de nuevo código, nos avise de manera de poder tomar acciones frente a ello.
+
+
+------ Imagen que logre describir de manera gráfica el proceso de desarrollo ---------
+
+
+Indice de capítulos
+
+ - Cápitulo 1: Ambiente de desarollo, TDD , AngularJS y Snapshot Testing.
+
+
+## Cápitulo 1: Ambiente de desarollo, TDD , AngularJS y Snapshot Testing.
+
+En este primer capítulo discutiremos como desarrollar una simple funcionalidad usando la metodología de desarrollo liderado por pruebas (TDD por sus siglas en inglés). 
 
 En concreto revisaremos:
-Configurar un entorno de desarrollo.
-Utilizar git para versionar las aplicaciones.
-Entender la configuración básica de Babel para usar funcionalidades futurísticas de Javascript que aún no soporta la mayoría de los navegadores, como async/await, import/export y Classes. Esto nos permitirá tener código conciso y sintáctico.
-Entender las principales funcionalidades y configuración del framework Jest, una suit de pruebas encantadora según su sitio web.
-Diseñar el código y probarlo usando TDD y un enfoque orientado a componentes.
+ - Configurar un entorno de desarrollo mínimo.
+ - Utilizar git para versionar las aplicaciones.
+ - Comprender los conceptos básicos de TDD y construir una funcionalidad simple.
+ - Introducción a AngularJS.
+ - Snapshot testing de templates compilados por AngularJS.
 
-De una buena vez, comencemos.
+### Configurar un entorno de desarrollo mínimo.
+
+Para nuestro entorno y proceso de desarollo necesitaremos cumplir los siguientes requisitos:
+
+- Una terminal capaz de comprender comandos unix. (Para windows recomendamos
+
 Requerimientos
 NodeJS ≥ 8.4.0 usando NVM
 Git
@@ -20,7 +44,7 @@ Git
 Usaremos Git y Github para la posterior integración de un proceso que nos permitirá hacer deploy continuo y generar versiones de la aplicación.
 Partiremos creando la carpeta vacía e iniciando git en ella.
 
-```
+```unix
 git init 
 git remote add origin <url_de_mi_repositorio_en_github>
 ```
@@ -29,7 +53,7 @@ Creemos los siguientes 3 archivos en la raíz del repositorio:
 
 **package.json**
 
-```
+```json
 {
   "name": "angularjs-tdd-jest",
   "version": "0.1.0",
@@ -58,7 +82,7 @@ Hay 2 cosas importantes que notar en el archivo `package.json`:
 
 **.gitignore**
 
-```
+```git
 node_modules
 coverage
 npm-debug.log
@@ -67,7 +91,7 @@ dist
 
 .babelrc
 
-```
+```json
 {
   "presets": [ "es2015", "stage-3"]
 }
