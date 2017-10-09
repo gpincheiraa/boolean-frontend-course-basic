@@ -124,6 +124,7 @@ En este caso no aplicaría refactorizar, ya que solo hemos creado la definición
 
 A esta altura tenemos la siguiente estructura en nuestro directorio:
 
+```
 +-- src
 |   +-- components
 |   +-- todoList.component.js
@@ -132,47 +133,56 @@ A esta altura tenemos la siguiente estructura en nuestro directorio:
 |   +-- jest.init.js
 +-- .babelrc
 +-- package.json
+```
+Antes de escribir la siguiente prueba, veamos un código muy útil incluido en el package.json  para trabajar con TDD: `npm run tdd`. Al ejecutarlo vemos que una consola interactiva entra en acción junto con al modo observador para Jest (watch mode). Desde ahora escribiremos las nuevas pruebas y estas se ejecutaran automáticamente cuando nuestros archivos se actualizan.
 
-Antes de escribir la siguiente prueba, veamos un código muy útil incluido en el package.json  para trabajar con TDD npm run tdd  . Al ejecutarlo vemos que una consola interactiva entra en acción junto con al modo observador para Jest. Desde ahora escribiremos las nuevas pruebas y estas se ejecutaran automáticamente cuando nuestros archivos se actualizan.
-Continuemos con nuestro proceso de diseño…
+## Continuemos con nuestro proceso de diseño…
+
 Ahora diseñaremos la funcionalidad para agregar un nuevo item al todoList. El siguiente test que construiremos está en la linea 14:
 
-
+## ----------------------> Agregar snippet con el segundo test
 
 Al actualizar nuestros archivos veremos que nuestro nuevo test está efectivamente fallando.
-La funcionalidad que considera agregar un array al controlador como propiedad llamada todosList y crea un addTodo. Notemos cómo seguimos diseñando nuestro código al definir los nombres de las propiedades, la estructura y métodos. 
-Agregamos dos expectativas, después de agregar un todo, esperamos que la longitud de la propiedad de cambie y que el todo agregado sea agregado al array.
+La funcionalidad que considera agregar un array al controlador como propiedad llamada todosList y usar un método addTodo. Notemos cómo seguimos diseñando nuestro código al definir los nombres de las propiedades, la estructura y métodos. 
+Agregamos dos expectativas, después de agregar un todo, esperamos que la longitud de la propiedad aumente en uno y que el todo agregado esté presente en el array.
+
 Nuevamente, agregamos el mínimo código requerido:
 
-
+## -----------------> actualizar snippet con el componente que agrega todos
 
 Ahora que tenemos pasando 2/2 pruebas, la siguiente funcionalidad a diseñar es la posibilidad de marcar un cierto todo como completado. El test relacionado está en la línea 27:
 
+## -----------------> Agregar test con check/unckeck todo
 
+Podemos identificar tres secciones en el código de la prueba. Este concepto viene de las siglas AAA o Arrange-Act-Assert (también mancionado como Given-When-Then en ciertas comunidades, pero se refieren a lo mismo), por sus siglas en inglés. En resumen quiere decir:
 
-Podemos identificar tres secciones en el código de la prueba. Este concepto viene de las siglas AAA o Arrange-Act-Assert, por sus siglas en inglés. En resumen quiere decir:
-Preparar las pre-condiciones y entradas.
-Ejecutar el método que provocará un comportamiento que vamos a probar, y
-Comprobar que la expectativa esperada haya ocurrido. 
+Preparar las pre-condiciones y entradas (Arrange).
+
+Ejecutar el método que provocará un comportamiento que vamos a probar (Act), y
+
+Comprobar que la expectativa esperada haya ocurrido (Assert). 
 
 En las líneas 28–43 podemos ver la sección de preparación. Podemos ver que se establecen las variables sobre las cuales luego ejecutaremos y comprobaremos su comportamiento en las secciones siguientes.
 En las líneas 44 y 47 podemos ver la ejecución.
 En las líneas 45 y 48 vemos la sección de comprobación.
 Con nuestra prueba fallando, escribamos el código para pasar.
 
-
+## ------------------> snippet con componente con check/uncheck
 
 La última funcionalidad será la posibilidad de eliminar un item todo. Escribamos este test en la línea 51:
 
-
+## -------------------> snippet de test para borrar todo
 
 Esta es una prueba más elaborada. Podemos identificar la sección de preparación en las líneas 52–69, pero mira especialmente las líneas 67–68.
 todosListOriginalSize  fue creada para comparar en las expectativas que el largo del todoList disminuyó.
+
 todoTargetName  fue creada para obtener el nombre del todo objetivo, el que será usado para revisar en las expectativas que el item no está presente en todosList.
-todoFinderen la línea 69 es una función que revisa si cierto todo existe comparando con todoTargetName  .
+
+todoFinderen la línea 69 es una función que revisa si cierto todo existe comparando con todoTargetName.
+
 El código para pasar las pruebas es:
 
-
+## ------------------> snippet con componente que elimina todo
 
 Felicitaciones! 4 de 4 pruebas pasando. Nuestras funcionalidades están completas. Como conclusión podemos decir que ganamos dos cosas:
 Las pruebas actúan como un “Contrato para los desarrolladores” Esto es, que en el futuro, cuando otros desarrolladores o nosotros mismos modifiquemos el código sin usar TDD e introducimos cambios en el comportamiento correcto, las pruebas que se aseguran de la calidad del comportamiento fallarán y podremos detectarlo.
