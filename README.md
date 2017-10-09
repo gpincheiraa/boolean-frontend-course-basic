@@ -16,33 +16,76 @@ Requerimientos
 NodeJS ≥ 8.4.0 usando NVM
 Git
 
-## Control de versiones: Git
-
-Usaremos Git y Github para la posterior integración de herramientas de deploy continuo. 
+**Control de versiones: Git**
+Usaremos Git y Github para la posterior integración de un proceso que nos permitirá hacer deploy continuo y generar versiones de la aplicación.
 Partiremos creando la carpeta vacía e iniciando git en ella.
 
-´´´git init´´´ 
-´´´git remote add origin <url_de_mi_repositorio_en_github>´´´
+```
+git init 
+git remote add origin <url_de_mi_repositorio_en_github> 
+```
 
-Creemos los siguientes dos archivos en la raíz del repositorio:
-package.json
+Creemos los siguientes 3 archivos en la raíz del repositorio:
 
-.gitignore
+**package.json**
 
-Ahora agregamos esos archivos y creamos el commit correspondiente
+```
+{
+  "name": "angularjs-tdd-jest",
+  "version": "0.1.0",
+  "scripts": {
+    "test": "jest --coverage --verbose",
+    "tdd": "jest --watch --verbose",
+    "check-coverage": "npm test | http-server -so -p 9000 coverage/lcov-report"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-stage-3": "^6.24.1",
+    "http-server": "^0.10.0",
+    "jest-cli": "^20.0.1"
+  },
+  "engines": {
+    "node": ">=8.4.0"
+  }
+}
+```
+Hay 2 cosas importantes que notar en el archivo `package.json`:
 
-´´´git add package.json .gitignore´´´
-´´´git commit -m "Adding enviroment configuration"´´´
+  - scripts: Son los scripts de npm que se corren a través del comando `npm run nombre_script`. El script test también puede correrse utilizando `npm test`. Esta diferencia tiene que ver porque existen [scripts por defecto](https://docs.npmjs.com/misc/scripts#description) dentro de los cuales test es uno de ellos. Los comandos ejecutados a través de los npm scripts por ejemplo `jest` son archivos de linea de comandos instalados a través de los paquetes de dependencias. Si queremos ver estos archivos, una vez instaladas las dependencias, podemos encontrarlos en la ruta `node_modules/.bin/`.
 
-## Creando nuestra aplicación en el futuro con Babel
+  - devDependencies: Son las dependencias de desarrollo de nuestro proyecto. Estos paquetes nos serviran para ejecutar comandos que nos serán de utilidad por ejemplo `http-server` que nos servirá para correr un servidor local donde veremos en el navegador el informe de cobertura de los test.
 
-El entorno requerido para trabajar con funcionalidades futurísticas de Ecmascript como import/export, objectos destructivos array/spread operator y otros está presente en el archivo package.json , en él están presentes todas las librerías necesarias para nuestros ambiente de desarrollo y ambiente de pruebas con parámetros de cobertura de pruebas. 
-Ya sea para jest o babel-loader (veremos más de esto cuando agreguemos el webpack-dev-server), vamos a necesitar el archivo .babelrc para soportar funcionalidades de ES6/7/8. En nuestro caso agregaremos “es2015” para trabajar con import/export y “stage-3” para las funcionalidades que están más próximas a ser parte del estándar ECMAScript. 
-La definición de .babelrc es la siguiente:
 
-Ahora que entendemos un poco más ejecutemos el siguiente comando: 
+**.gitignore**
 
-´´´npm install´´´
+```
+node_modules
+coverage
+npm-debug.log
+dist
+```
+
+.babelrc
+
+```
+{
+  "presets": [ "es2015", "stage-3"]
+}
+```
+
+##CAMBIAR EXPLICACIÓN DE BABEL EXPLICANDO POR EJEMPLO EL STAGE-3 Y SOLAMENTE MENCIONAR CUALES SON LAS FUNCIONALIDADES QUE USAREMOS EN ESTE PRIMER ARCHIVO
+
+Ahora agregamos esos archivos y creamos el commit correspondiente:
+
+```
+git add package.json .gitignore .babelrc
+git commit -m "Adding development environment configuration"
+```
+
+Finalmente instalaremos estas dependencias corriendo el comando:
+```
+npm install
+```
 
 ## Explicando la configuración básica de Jest
 
@@ -61,7 +104,7 @@ En este pequeño ejemplo nuestro código ya está siendo diseñado e incluye:
 El nombre del archivo y la clase que se debiese exportar en el componente (todoList.component) en la primera línea
 Un escenario común (línea 6) para todos nuestros test donde se crea una nueva instancia de nuestro controlador.
 Un test básico que comprueba si el constructor de la clase funciona correctamente y nos retorna una instancia de esa clase.
-  
+
 Ahora veamos fallar esta prueba, corramos npm test:
 
 Entonces, el próximo paso en el ciclo “red-green-refactor” es escribir solo el código necesario para pasar la prueba. Para lograr esto necesitamos crear el archivo, exportar el objeto que define nuestra constante e incluir la definición del controlador. Creamos el archivo todoList.component.js en el siguiente directorio ./src/components con el código justo.
