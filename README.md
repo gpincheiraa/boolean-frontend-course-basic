@@ -34,13 +34,10 @@ En concreto revisaremos:
 
 Para nuestro entorno y proceso de desarollo necesitaremos cumplir los siguientes requisitos:
 
-- Una terminal capaz de comprender comandos unix. (Para windows recomendamos
+- Una terminal. (Para windows recomendamos [cmder](http://cmder.net/))
+- NodeJS >= 8.4 a través de NVM
+- Git 
 
-Requerimientos
-NodeJS ≥ 8.4.0 usando NVM
-Git
-
-## Control de versiones: Git
 Usaremos Git y Github para la posterior integración de un proceso que nos permitirá hacer deploy continuo y generar versiones de la aplicación.
 Partiremos creando la carpeta vacía e iniciando git en ella.
 
@@ -97,7 +94,7 @@ dist
 }
 ```
 
-##CAMBIAR EXPLICACIÓN DE BABEL EXPLICANDO POR EJEMPLO EL STAGE-3 Y SOLAMENTE MENCIONAR CUALES SON LAS FUNCIONALIDADES QUE USAREMOS EN ESTE PRIMER ARCHIVO
+##CAMBIAR EXPLICACIÓN DE BABEL EXPLICANDO POR EJEMPLO EL STAGE-3 Y SOLAMENTE MENCIONAR CUALES SON LAS FUNCIONALIDADES QUE USAREMOS EN ESTE PRIMER Capítulo
 
 Ahora agregamos esos archivos y creamos el commit correspondiente:
 
@@ -111,14 +108,23 @@ Finalmente instalaremos estas dependencias corriendo el comando:
 npm install
 ```
 
-## Explicando la configuración básica de Jest
-
-Jest es cero-configuración, solo necesitamos seguir 2 convenciones: la carpeta que contendrá la suite de test se debe llamar **__test__** y los archivos con los test deben tener la extensión **.spec.js**, ¡¡¡Super simple!!!
-
 ## Crear una aplicación con TDD
 
-Crearemos la clásica lista “to-do list”, pero esta vez usando la metodología TDD para escribir nuestro código y enfocarnos en código orientado a componentes.
-Lo primero es simplemente escribir nuestra primera prueba basado en el ciclo “red-green-refactor”.
+Escribiremos pruebas unitarias a una unidad de código que resuelve el siguiente requerimiento:
+```
+Construir un código capaz de:
+- agregar una nueva tarea a una lista de tareas.
+- cambiar el estado de una tarea de completed a incomplete o viceversa.
+- eliminar una tarea de la lista
+```
+La lista de tareas consiste en una o más tareas, donde cada tarea tiene 2 propiedades: name y completed; name es el nombre dado a la tarea 
+y completed representa si la tarea ya fue realizada o no.
+
+Para poder escribir y correr pruebas unitarias utilizaremos Jest, un completo framework para hacer tests. Una de sus particularidades es que tiene cero-configuración, solo necesitamos seguir 2 convenciones: la carpeta que contendrá la suite de test se debe llamar **__test__** y los archivos con los test deben tener la extensión **.spec.js**, ¡¡¡Super simple!!!
+Si en un futuro queremos utilizar jest para agregar comportamiento más avanzado a nuestra suite de tests, este provee [muchas opciones de configuración](https://jest-bot.github.io/jest/docs/configuration.html). Más adelante conversaremos acerca de algunas de estas.
+
+
+Lo primero es simplemente escribir nuestra primera prueba considerando el ciclo [“red-green-refactor”](http://blog.cleancoder.com/uncle-bob/2014/12/17/TheCyclesOfTDD.html).
 Escribiremos una prueba unitaria en el archivo `todoList.component.spec.js` dentro del directorio `./__test__/`.
 
 ```
@@ -149,13 +155,13 @@ Claramente este test fallará y podemos corroborarlo corriendo el comando `npm t
 
 ![Failing Test](https://cdn-images-1.medium.com/max/800/1*RJLkbAApKyEwzs-TBzGbFg.png)
 
-Entonces, el próximo paso en el ciclo “red-green-refactor” es escribir solo el código necesario para pasar la prueba. Para lograr esto necesitamos crear el archivo con el nombre y la ruta que definimos en nuestros test: `src/components/todoList.component`, exportar la clase con el nombre también definido en los test: `TodoListController`.
+Entonces, el próximo paso en el ciclo “red-green-refactor” es escribir solo el código necesario para pasar la prueba. Para lograr esto necesitamos crear el archivo con el nombre y ruta que definimos en nuestro test: `src/components/todoList.component`, exportar la clase con el nombre también definido en los test: `TodoListController`.
 
 ```
 export class TodoListController {}
 ```
 
-Ya escribimos nuestra primera clase que en un futuro, cuando integremos el framework AngularJS, servirá como [controlador de un componente](https://docs.angularjs.org/guide/component).
+Ya escribimos nuestra primera clase que en un futuro, cuando integremos el framework AngularJS a nuestro stack de desarrollo, servirá como [controlador de un componente](https://docs.angularjs.org/guide/component).
 
 Ahora veamos que la prueba pasa corriendo nuevamente:  `npm test`.
 
