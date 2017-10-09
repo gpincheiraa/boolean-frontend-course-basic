@@ -1,115 +1,70 @@
-Desarrollo Web Profesional parte I: Aplicación AngularJS con Testing y Javascript del futuro.
+# Desarrollo Web Profesional parte I: Aplicación AngularJS con Testing y Javascript del futuro.
 
-Bienvenido a la serie de Desarrollo Web Profesional parte I: El Front End. En esta serie de 4 artículos revisaremos brevemente conceptos importantes para desarrollar aplicaciones Front End de forma profesional. Lo haremos integrando herramientas simples, pero poderosas para construir un proceso de desarrollo que asegura comportamiento (muy útil para metodologías ágiles), calidad de código, escalabilidad, rendimiento e integración continua.
+Bienvenido a la serie de Desarrollo Web Profesional parte I: El Front End. En esta serie de 4 artículos revisaremos brevemente conceptos importantes para desarrollar aplicaciones Front End de forma profesional. Lo haremos integrando herramientas simples, pero poderosas para construir un **proceso de desarrollo** que asegura comportamiento (muy útil para metodologías ágiles), calidad de código, escalabilidad, rendimiento e integración continua.
+
 En este primer artículo discutiremos acerca del enfoque orientado a componentes para desarrollar una app usando la metodología de desarrollo liderado por pruebas (TDD por sus siglas en inglés). También discutiremos el por qué no basta con estar en permanente actualización de los frameworks y librerías más populares, sino que es de suma importancia entender los conceptos transversales que aplican al desarrollo Front End profesional, los cuales muchas veces son consecuencia de nuevas funcionalidades y evolución del lenguaje JavaScript.
+
 En concreto revisaremos:
 Configurar un entorno de desarrollo.
 Utilizar git para versionar las aplicaciones.
 Entender la configuración básica de Babel para usar funcionalidades futurísticas de Javascript que aún no soporta la mayoría de los navegadores, como async/await, import/export y Classes. Esto nos permitirá tener código conciso y sintáctico.
 Entender las principales funcionalidades y configuración del framework Jest, una suit de pruebas encantadora según su sitio web.
 Diseñar el código y probarlo usando TDD y un enfoque orientado a componentes.
-Usar la configuración básica de webpack-dev-server e implementar los cargadores (loaders) de webpack.
 
 De una buena vez, comencemos.
 Requerimientos
 NodeJS ≥ 8.4.0 usando NVM
 Git
 
-**Control de versiones: Git**
-Usaremos Git y Github para la posterior integración de un proceso que nos permitirá hacer deploy continuo y generar versiones de la aplicación.
+## Control de versiones: Git
+
+Usaremos Git y Github para la posterior integración de herramientas de deploy continuo. 
 Partiremos creando la carpeta vacía e iniciando git en ella.
 
-```
-git init 
-git remote add origin <url_de_mi_repositorio_en_github> 
-```
+´´´git init´´´ 
+´´´git remote add origin <url_de_mi_repositorio_en_github>´´´
 
-Creemos los siguientes 3 archivos en la raíz del repositorio:
+Creemos los siguientes dos archivos en la raíz del repositorio:
+package.json
 
-**package.json**
+.gitignore
 
-```
-{
-  "name": "angularjs-tdd-jest",
-  "version": "0.1.0",
-  "scripts": {
-    "test": "jest --coverage --verbose",
-    "tdd": "jest --watch --verbose",
-    "check-coverage": "npm test | http-server -so -p 9000 coverage/lcov-report"
-  },
-  "devDependencies": {
-    "babel-preset-es2015": "^6.9.0",
-    "babel-preset-stage-3": "^6.24.1",
-    "http-server": "^0.10.0",
-    "jest-cli": "^20.0.1"
-  },
-  "engines": {
-    "node": ">=8.4.0"
-  }
-}
-```
-Hay 2 cosas importantes que notar en el archivo `package.json`:
+Ahora agregamos esos archivos y creamos el commit correspondiente
 
-  - scripts: Son los scripts de npm que se corren a través del comando `npm run nombre_script`. El script test también puede correrse utilizando `npm test`. Esta diferencia tiene que ver porque existen [scripts por defecto](https://docs.npmjs.com/misc/scripts#description) dentro de los cuales test es uno de ellos. Los comandos ejecutados a través de los npm scripts por ejemplo `jest` son archivos de linea de comandos instalados a través de los paquetes de dependencias. Si queremos ver estos archivos, una vez instaladas las dependencias, podemos encontrarlos en la ruta `node_modules/.bin/`.
+´´´git add package.json .gitignore´´´
+´´´git commit -m "Adding enviroment configuration"´´´
 
-  - devDependencies: Son las dependencias de desarrollo de nuestro proyecto. Estos paquetes nos serviran para ejecutar comandos que nos serán de utilidad por ejemplo `http-server` que nos servirá para correr un servidor local donde veremos en el navegador el informe de cobertura de los test.
+## Creando nuestra aplicación en el futuro con Babel
 
+El entorno requerido para trabajar con funcionalidades futurísticas de Ecmascript como import/export, objectos destructivos array/spread operator y otros está presente en el archivo package.json , en él están presentes todas las librerías necesarias para nuestros ambiente de desarrollo y ambiente de pruebas con parámetros de cobertura de pruebas. 
+Ya sea para jest o babel-loader (veremos más de esto cuando agreguemos el webpack-dev-server), vamos a necesitar el archivo .babelrc para soportar funcionalidades de ES6/7/8. En nuestro caso agregaremos “es2015” para trabajar con import/export y “stage-3” para las funcionalidades que están más próximas a ser parte del estándar ECMAScript. 
+La definición de .babelrc es la siguiente:
 
-**.gitignore**
+Ahora que entendemos un poco más ejecutemos el siguiente comando: 
 
-```
-node_modules
-coverage
-npm-debug.log
-dist
-```
+´´´npm install´´´
 
-.babelrc
+## Explicando la configuración básica de Jest
 
-```
-{
-  "presets": [ "es2015", "stage-3"]
-}
-```
+Jest es cero-configuración, solo necesitamos seguir 2 conveciones: la carpeta que albergar la suite de test se debe llamar **__test__** y los archivos deben tener la extensión **.spec.js**, ¡¡¡fantástico!!!
 
-##CAMBIAR EXPLICACIÓN DE BABEL EXPLICANDO POR EJEMPLO EL STAGE-3 Y SOLAMENTE MENCIONAR CUALES SON LAS FUNCIONALIDADES QUE USAREMOS EN ESTE PRIMER ARCHIVO
+## Crear una aplicación con TDD
 
-Ahora agregamos esos archivos y creamos el commit correspondiente:
-
-```
-git add package.json .gitignore .babelrc
-git commit -m "Adding development environment configuration"
-```
-
-Finalmente instalaremos estas dependencias corriendo el comando:
-```
-npm install
-```
-
-
-Explicando la configuración básica de Jest
-Las opciones de testing son muy sencillas. Se necesitan configurar 3 cosas: Configurar la url por defecto para los test, un archivo de configuración y el patrón donde Jest podrá encontrar el código bajo los test (conocido como SUT).
-testURL : La URL por defecto cuando corren los test. Por ejemplo, esto podría reflejarse en el location.href .
-testMatch : Un arreglo con las convenciones de nombre de los archivos donde están los test. Por ejemplo, todos los archivos terminados en “_spec.js”.
-
-Opciones para cobertura de código son muy sencillos. Podemos configurar las métricas asociadas.
-collectCoverageFrom : El código que será medido e incluido en el reporte a cubrir.
-coverageThreshold : La métrica mínima que los test serán considerados aceptables.
-Crear una aplicación con TDD
 Crearemos la clásica lista “to-do list”, pero esta vez usando la metodología TDD para escribir nuestro código y enfocarnos en código orientado a componentes.
-Lo primero es simplemente escribir nuestra primera prueba basado en el ciclo “red-green-refactor”, escribiremos una prueba unitaria en el archivo todoList.component_spec.js dentro del directorio ./test/ . Claramente este test fallará, y que suerte qué así sea, ya que no hemos escrito ningún código.
+Lo primero es simplemente escribir nuestra primera prueba basado en el ciclo “red-green-refactor”, escribiremos una prueba unitaria en el archivo todoList.component.spec.js dentro del directorio ./__test__/. Claramente este test fallará, y que suerte qué así sea, ya que no hemos escrito ningún código.
 
 
+Se ve simple verdad?, lo primero es importar el código que vamos a probar. En este punto estamos diseñando nuestro código con código. Pensar en el proceso mental de diseñar/modelar y escribir esas ideas en nuestros test.
 
-Archivo todoList.component_spec.jsSe ve simple verdad?, lo primero es importar el código que vamos a probar. En este punto estamos diseñando nuestro código con código. Pensar en el proceso mental de diseñar/modelar y escribir esas ideas en nuestros test.
 En este pequeño ejemplo nuestro código ya está siendo diseñado e incluye:
-El nombre del archivo y la clase que se debiese exportar en él (todoList.component) en la primera línea
+
+El nombre del archivo y la clase que se debiese exportar en el componente (todoList.component) en la primera línea
 Un escenario común (línea 6) para todos nuestros test donde se crea una nueva instancia de nuestro controlador.
-Un test básico que comprueba si la instancia creada está definida y es de su clase correspondiente.
+Un test básico que comprueba si el constructor de la clase funciona correctamente y nos retorna una instancia de esa clase.
+  
+Ahora veamos fallar esta prueba, corramos npm test:
 
-Ahora veamos fallar esta prueba, corramos npm test  :
 Entonces, el próximo paso en el ciclo “red-green-refactor” es escribir solo el código necesario para pasar la prueba. Para lograr esto necesitamos crear el archivo, exportar el objeto que define nuestra constante e incluir la definición del controlador. Creamos el archivo todoList.component.js en el siguiente directorio ./src/components con el código justo.
-
 
 
 En este punto, solo definimos una contante con la mínima definición de un componente de AngularJS. Para más detalles sobre esto revisa esto. Hay que notar que no hemos resgistrado el componente en el sistema de módulos de Angular, solamente creamos la definición y la exportamos, pero en el test registramos el componente usando su definición.
@@ -120,7 +75,7 @@ A esta altura tenemos la siguiente estructura en nuestro directorio:
 |   +-- components
 |   +-- todoList.component.js
 +-- test
-|   +-- todoList.component_spec.js
+|   +-- todoList.component.spec.js
 |   +-- jest.init.js
 +-- .babelrc
 +-- package.json
