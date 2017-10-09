@@ -16,13 +16,13 @@ Requerimientos
 NodeJS ≥ 8.4.0 usando NVM
 Git
 
-**Control de versiones: Git**
+## Control de versiones: Git
 Usaremos Git y Github para la posterior integración de un proceso que nos permitirá hacer deploy continuo y generar versiones de la aplicación.
 Partiremos creando la carpeta vacía e iniciando git en ella.
 
 ```
 git init 
-git remote add origin <url_de_mi_repositorio_en_github> 
+git remote add origin <url_de_mi_repositorio_en_github>
 ```
 
 Creemos los siguientes 3 archivos en la raíz del repositorio:
@@ -96,6 +96,7 @@ Jest es cero-configuración, solo necesitamos seguir 2 conveciones: la carpeta q
 Crearemos la clásica lista “to-do list”, pero esta vez usando la metodología TDD para escribir nuestro código y enfocarnos en código orientado a componentes.
 Lo primero es simplemente escribir nuestra primera prueba basado en el ciclo “red-green-refactor”, escribiremos una prueba unitaria en el archivo todoList.component.spec.js dentro del directorio ./__test__/. Claramente este test fallará, y que suerte qué así sea, ya que no hemos escrito ningún código.
 
+## ----------> Incluir snippet del primer test
 
 Se ve simple verdad?, lo primero es importar el código que vamos a probar. En este punto estamos diseñando nuestro código con código. Pensar en el proceso mental de diseñar/modelar y escribir esas ideas en nuestros test.
 
@@ -105,15 +106,24 @@ El nombre del archivo y la clase que se debiese exportar en el componente (todoL
 Un escenario común (línea 6) para todos nuestros test donde se crea una nueva instancia de nuestro controlador.
 Un test básico que comprueba si el constructor de la clase funciona correctamente y nos retorna una instancia de esa clase.
 
-Ahora veamos fallar esta prueba, corramos npm test:
+Ahora veamos fallar esta prueba, corramos  `npm test` :
+
+## ---------------> incluir screenshot del primer test fallando
 
 Entonces, el próximo paso en el ciclo “red-green-refactor” es escribir solo el código necesario para pasar la prueba. Para lograr esto necesitamos crear el archivo, exportar el objeto que define nuestra constante e incluir la definición del controlador. Creamos el archivo todoList.component.js en el siguiente directorio ./src/components con el código justo.
 
+## -------------> Incluir el snippet del componente
 
-En este punto, solo definimos una contante con la mínima definición de un componente de AngularJS. Para más detalles sobre esto revisa esto. Hay que notar que no hemos resgistrado el componente en el sistema de módulos de Angular, solamente creamos la definición y la exportamos, pero en el test registramos el componente usando su definición.
-Ahora veamos que la prueba pasa usando npm test  
+En este punto, solo definimos una contante con la mínima definición de un componente de AngularJS. Para más detalles puedes revisar [esto](https://docs.angularjs.org/guide/component). Hay que notar que no hemos resgistrado el componente en el sistema de módulos de Angular, solamente creamos la definición y la exportamos, pero en el test registramos el componente usando su definición.
+
+Ahora veamos que la prueba pasa usando `npm test`
+
+## --------------------> Incluir test pasando
+  
 En este caso no aplicaría refactorizar, ya que solo hemos creado la definición del controlador y nada más.
+
 A esta altura tenemos la siguiente estructura en nuestro directorio:
+
 +-- src
 |   +-- components
 |   +-- todoList.component.js
@@ -122,6 +132,7 @@ A esta altura tenemos la siguiente estructura en nuestro directorio:
 |   +-- jest.init.js
 +-- .babelrc
 +-- package.json
+
 Antes de escribir la siguiente prueba, veamos un código muy útil incluido en el package.json  para trabajar con TDD npm run tdd  . Al ejecutarlo vemos que una consola interactiva entra en acción junto con al modo observador para Jest. Desde ahora escribiremos las nuevas pruebas y estas se ejecutaran automáticamente cuando nuestros archivos se actualizan.
 Continuemos con nuestro proceso de diseño…
 Ahora diseñaremos la funcionalidad para agregar un nuevo item al todoList. El siguiente test que construiremos está en la linea 14:
