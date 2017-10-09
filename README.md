@@ -206,3 +206,104 @@ Nuestro directorio ahora luce así:
 Ahora sí, ejecuta npm start y el navegador debiese abrir nuestra apliación
 
 ############################################################################################################################
+##Stubby4node para simular una API REST,  Testing After Development (TAD), Tests de integración e Integración continua con TravisCI
+
+En esta oportunidad dejaremos de lado la práctica de TDD, partiremos escribiendo primero la funcionalidad y luego el test asociado. A esto se le llama Testing After Development (TAD por sus siglas en inglés). 
+Siguiendo con nuestra to-do list, ahora agregaremos otro nivel de funcionalidad: Servicios de AngularJS para comunicarnos con una API REST . La definición de clase para crear un servicio es la siguiente:
+
+
+
+A diferencia de la clase TodoList que desarrollamos en el artículo anterior, esta vez definimos un constructor. AngularJS nos da la posibilidad de usar el patrón de inyección de dependencias para inyectar a nuestra instancia algún servicio del core y otro tipo de cosas como factories, filtros, constantes y/o values a través del constructor de la clase. 
+En este caso usaremos el servicio core$http y  una constante llamada BASE_URL que contendrá la url donde publicaremos nuestra API REST.
+Registrar Servicio en Angular, Resolviendo Promesas en el Router y Component Bindings
+En el archivo index.js registramos nuestro servicio y la constante BASE_URL
+
+
+
+Ahora podemos hacer uso de este servicio y podremos inyectarlo cuando lo necesitemos. 
+En este caso necesitamos este servicio para proveer al componente TodoListComponent de la lista de todos proveniente desde el servidor 
+
+
+
+Nótese como es utilizado el atributo resolve en la definición de la ruta. Cada una de las key de este objeto debe ser un callback que retorne el valor que será inyectado en el componente. A través de la propiedad bindings en la definición del componente, agregaremos el resultado de este callback utilizando el mismo nombre de la key acá definida, en este caso todosList 
+
+
+
+El  callback definido en el resolvede la ruta, tiene la posibilidad de usar el patrón de inyección de dependencias, por lo tanto podemos usar nuestro Servicio TodoService y a través de se su método getTodos retornar una Promesa. Algo importante a considerar es que si el valor retornado por el callback es una Promesa, el router no hará render del template del componente hasta que esta promesa sea resuelta.
+Si corremos nuestro código utlizando npm start, como es de esperarse obtendremos un error debido a que no tenemos una API REST que nos responda un JSON. 
+
+
+Stubby4node para simular una API REST 
+Cuando estamos desarrollando Front End llegamos siempre al punto en que tenemos que comenzar a modelar cuáles son los datos que serán enviados desde una API REST y como vendrán estructurados. Este proceso es clave ya que el éxito de un buen modelado nos permitirá tener un FrontEnd más preparado para el siempre cambiante modelamiento del negocio. Para comenzar a comunicarnos con una API REST necesitamos tener una API publicada en la web o bien tener un proyecto Backend corriendo en local para poder obtener datos. 
+Aquí es donde entra la librería stubby4node que nos permitirá simular el comportamiento de una API REST y entregar respuestas predeterminadas a los endpoints que nosotros registremos, además de soportar comportamientos más avanzados como recibir tokens de autenticación, agregar retardo a las respuestas (muy útil para simular y probar loaders) y más.
+npm install --save-dev stubby
+Ahora modificamos nuestro package.json para agregar un script para correr stubby a través de su línea de comandos:
+"stubs": "stubby -w -d stubs/fakeserver.yml -s 5000" 
+La opción -w de watch, sirve para que cuando editemos los archivos de respuestas, stubby se actualice automáticamente.
+La opción -d sirve para indicar el path en el cual se encuentra el archivo de configuración de stubby.
+La opción -s sirve para indicar el puerto http en el cual correrá stubby. 
+
+Ahora crearemos 2 archivos bajo un directorio al que llamaremos ./stubs uno de configuración llamado fakeserver.yml y otro llamado todos_get.json que contendrá la respuesta cuando se llame al endpoint http://localhost:5000/api/todos . 
+
+
+
+
+
+
+Nuestra estructura de directorio ahora debería verse así:
+.
++-- src
+|   +-- components
+    |   +-- todoList.component.html
+    |   +-- todoList.component.js
+|   +-- services
+    |   +-- todo.service.js    
+    +-- index.html
+    +-- index.js
+    +-- routes.js
++-- test
+|   +-- todoList.component_spec.js
+|   +-- jest.init.js
++-- .babelrc
++-- package.json
++-- webpack.config.js
+Necesitamos decirle a nuestro script principal que corra stubby y el server de desarrollo en paralelo. Si bien podemos hacer esto de forma fácil con comandos soportados por sistemas operativos unix, existe un paquete de npm que nos permite hacer esto pero con soporte para otros sistemas como windows. Este paquete se llama npm-run-all.
+Primero lo instalaremos:
+npm install --save-dev npm-run-all
+y lo utilizaremos de la siguiente manera:
+"start": "npm-run-all -p stubs server" 
+Finalmente nuestro package.json debe lucir de la siguiente manera:
+
+
+
+Test después del desarrollo
+Mi opinión personal es que TDD no es una práctica que podamos aplicar el 100% de las veces y tarde o temprano terminamos escribiendo primero la funcionalidad y luego el test, sin embargo sigo afirmando que hacer TDD nos hará pensar con mayor certeza en los casos bordes e impedir que se introduzcan defectos en el código.
+Para escribir este test primero analizaremos a qué desafíos nos enfrentamos al momento de escribir este test. Existen 2 importantes puntos que debemos considerar:
+1.- Para hacer testing unitario de este servicio tendremos que crear una instancia de la clase en una función beforeEach para proveer a cada test. Debemos considerar que para construir esta instancia tenemos 2 dependencias. $http y BASE_URL 
+2 .- El método getTodos retorna una Promesa que interactúa con el servidor
+
+Los test unitarios tienen un cierto alcance: “Cuando estamos haciendo testing sobre X, y este tiene dependencias Y, Z, si estamos haciendo testing sobre un método que utilice Z, el alcance del test unitario será hasta que Z entre en acción”
+Analicemos nuestro servicio para ilustrar este concepto. 
+TodoService y sus 2 dependenciasPara que el test realmente sea unitario y nuestro alcance sólo llegue hasta TodoService debemos romper esa dependencia y reemplazarla por “algo” que simule su comportamiento. Ese algo se llama “mock”.
+Mocks
+Un mock es un objeto que simula el comportamiento de una dependencia para que el método bajo test quede aislado y se pueda así hacer testing unitario. Generalmente se utilizan para poder testear la colaboración que hay entre el método que le estamos haciendo testing y la dependencia. 
+Esto traducido a código luce de la siguiente manera:
+
+
+
+Nótese el código en las líneas 6 y 9. A esto se le llama mocks. Si se fijan para hacer mock del servicio $http solamente definimos el método get que es el único que utilizamos hasta el momento. Si más adelante extendemos nuestro servicio para que haga otras operaciones como post o put debemos tambien agregar las implementaciones en este mock.
+Tests de integración y la API de Javascript para manejar el DOM
+
+
+
+
+TravisCI
+
+
+Conclusión
+Doing TDD Well
+Test-driven development (TDD) is a simple concept. The TDD cycle is: Write a little bit of test, ensure it fails, write…www.developer.com
+Considering Test-After Development
+In this article, I'll build a solution twice. First, I'll write the code for a "reverser" method, a simple bit of code…www.developer.com
+Mocks Aren't Stubs
+I first came across the term "mock object" a few years ago in the Extreme Programming (XP) community. Since then I've…martinfowler.com
