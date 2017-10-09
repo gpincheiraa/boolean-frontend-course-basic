@@ -89,37 +89,52 @@ npm install
 
 ## Explicando la configuración básica de Jest
 
-Jest es cero-configuración, solo necesitamos seguir 2 conveciones: la carpeta que albergar la suite de test se debe llamar **__test__** y los archivos deben tener la extensión **.spec.js**, ¡¡¡fantástico!!!
+Jest es cero-configuración, solo necesitamos seguir 2 convenciones: la carpeta que contendrá la suite de test se debe llamar **__test__** y los archivos con los test deben tener la extensión **.spec.js**, ¡¡¡Super simple!!!
 
 ## Crear una aplicación con TDD
 
 Crearemos la clásica lista “to-do list”, pero esta vez usando la metodología TDD para escribir nuestro código y enfocarnos en código orientado a componentes.
-Lo primero es simplemente escribir nuestra primera prueba basado en el ciclo “red-green-refactor”, escribiremos una prueba unitaria en el archivo todoList.component.spec.js dentro del directorio ./__test__/. Claramente este test fallará, y que suerte qué así sea, ya que no hemos escrito ningún código.
+Lo primero es simplemente escribir nuestra primera prueba basado en el ciclo “red-green-refactor”.
+Escribiremos una prueba unitaria en el archivo `todoList.component.spec.js` dentro del directorio `./__test__/`.
 
-## ----------> Incluir snippet del primer test
+```
+import { TodoListController } from "../src/components/todoList.component"
+
+describe("TodoListController", () => {
+    let controller;
+
+    beforeEach(() => {
+        controller = new TodoListController()
+    });
+
+    it("Should have a defined controller", () => {
+        expect(controller).toBeInstanceOf(TodoListController)
+    });
+});
+```
 
 Se ve simple verdad?, lo primero es importar el código que vamos a probar. En este punto estamos diseñando nuestro código con código. Pensar en el proceso mental de diseñar/modelar y escribir esas ideas en nuestros test.
 
 En este pequeño ejemplo nuestro código ya está siendo diseñado e incluye:
 
-El nombre del archivo y la clase que se debiese exportar en el componente (todoList.component) en la primera línea
-Un escenario común (línea 6) para todos nuestros test donde se crea una nueva instancia de nuestro controlador.
-Un test básico que comprueba si el constructor de la clase funciona correctamente y nos retorna una instancia de esa clase.
+- El nombre del archivo y la clase que se debiese exportar en el componente (todoList.component) en la primera línea
+- Un escenario común (línea 6) que se correra por cada uno de nuestros test donde se crea una nueva instancia de nuestro controlador.
+- Un test básico que comprueba si el constructor de la clase funciona correctamente y nos retorna una instancia de esa clase.
 
-Ahora veamos fallar esta prueba, corramos  `npm test` :
+Claramente este test fallará y podemos corroborarlo corriendo el comando `npm test`.
 
-## ---------------> incluir screenshot del primer test fallando
+![Failing Test](https://cdn-images-1.medium.com/max/800/1*RJLkbAApKyEwzs-TBzGbFg.png)
 
-Entonces, el próximo paso en el ciclo “red-green-refactor” es escribir solo el código necesario para pasar la prueba. Para lograr esto necesitamos crear el archivo, exportar el objeto que define nuestra constante e incluir la definición del controlador. Creamos el archivo todoList.component.js en el siguiente directorio ./src/components con el código justo.
+Entonces, el próximo paso en el ciclo “red-green-refactor” es escribir solo el código necesario para pasar la prueba. Para lograr esto necesitamos crear el archivo con el nombre y la ruta que definimos en nuestros test: `src/components/todoList.component`, exportar la clase con el nombre también definido en los test: `TodoListController`.
 
-## -------------> Incluir el snippet del componente
+```
+export class TodoListController {}
+```
 
-En este punto, solo definimos una contante con la mínima definición de un componente de AngularJS. Para más detalles puedes revisar [esto](https://docs.angularjs.org/guide/component). Hay que notar que no hemos resgistrado el componente en el sistema de módulos de Angular, solamente creamos la definición y la exportamos, pero en el test registramos el componente usando su definición.
+Ya escribimos nuestra primera clase que en un futuro, cuando integremos el framework AngularJS, servirá como [controlador de un componente](https://docs.angularjs.org/guide/component).
 
-Ahora veamos que la prueba pasa usando `npm test`
+Ahora veamos que la prueba pasa corriendo nuevamente:  `npm test`.
 
-## --------------------> Incluir test pasando
-  
 En este caso no aplicaría refactorizar, ya que solo hemos creado la definición del controlador y nada más.
 
 A esta altura tenemos la siguiente estructura en nuestro directorio:
@@ -127,47 +142,134 @@ A esta altura tenemos la siguiente estructura en nuestro directorio:
 ```
 +-- src
 |   +-- components
-|   +-- todoList.component.js
+|   |   +-- todoList.component.js
 +-- test
 |   +-- todoList.component.spec.js
-|   +-- jest.init.js
++-- .gitignore
 +-- .babelrc
 +-- package.json
 ```
-Antes de escribir la siguiente prueba, veamos un código muy útil incluido en el package.json  para trabajar con TDD: `npm run tdd`. Al ejecutarlo vemos que una consola interactiva entra en acción junto con al modo observador para Jest (watch mode). Desde ahora escribiremos las nuevas pruebas y estas se ejecutaran automáticamente cuando nuestros archivos se actualizan.
 
-## Continuemos con nuestro proceso de diseño…
+Antes de escribir la siguiente prueba, veamos un script muy útil incluido en el package.json  para trabajar con TDD:  `npm run tdd`. Al ejecutarlo vemos que una consola interactiva entra en acción. Desde ahora escribiremos las nuevas pruebas y estas se ejecutaran automáticamente cuando nuestros archivos se actualizan.
+Continuemos con nuestro proceso de diseño...
+Ahora diseñaremos la funcionalidad para agregar un nuevo item al todoList.
+El siguiente test que construiremos está en la linea 14:
 
-Ahora diseñaremos la funcionalidad para agregar un nuevo item al todoList. El siguiente test que construiremos está en la linea 14:
+```
+import { TodoListController } from "../src/components/todoList.component"
 
-## ----------------------> Agregar snippet con el segundo test
+describe("TodoListController", () => {
+    let controller
+
+    beforeEach(() => {
+        controller = new TodoListController()
+    })
+
+    it("Should have a defined controller", () => {
+        expect(controller).toBeInstanceOf(TodoListController)
+    })
+
+    it("Should add a todo item", () => {
+        const todo = {
+            name: "Learn Programming using component based approach",
+            completed: false
+        }
+        controller.todosList = []
+
+        controller.addTodo(todo)
+
+        expect(controller.todosList.length).toBe(1)
+        expect(controller.todosList[0]).toEqual(todo)
+    })
+```
 
 Al actualizar nuestros archivos veremos que nuestro nuevo test está efectivamente fallando.
 La funcionalidad que considera agregar un array al controlador como propiedad llamada todosList y usar un método addTodo. Notemos cómo seguimos diseñando nuestro código al definir los nombres de las propiedades, la estructura y métodos. 
 Agregamos dos expectativas, después de agregar un todo, esperamos que la longitud de la propiedad aumente en uno y que el todo agregado esté presente en el array.
 
-Nuevamente, agregamos el mínimo código requerido:
+```
+export class TodoListController {
+    addTodo(todo){
+        this.todosList.push(todo)
+    }
+}
+```
 
-## -----------------> actualizar snippet con el componente que agrega todos
+Ahora que tenemos pasando 2/2 pruebas, la siguiente funcionalidad que diseñaremos es la posibilidad de marcar un cierto to-do como completado. El test relacionado está en la línea 27:
 
-Ahora que tenemos pasando 2/2 pruebas, la siguiente funcionalidad a diseñar es la posibilidad de marcar un cierto todo como completado. El test relacionado está en la línea 27:
+```
+import { TodoListController } from "../src/components/todoList.component"
 
-## -----------------> Agregar test con check/unckeck todo
+describe("TodoListController", () => {
+    let controller
 
-Podemos identificar tres secciones en el código de la prueba. Este concepto viene de las siglas AAA o Arrange-Act-Assert (también mancionado como Given-When-Then en ciertas comunidades, pero se refieren a lo mismo), por sus siglas en inglés. En resumen quiere decir:
+    beforeEach(() => {
+        controller = new TodoListController()
+    })
 
-Preparar las pre-condiciones y entradas (Arrange).
+    it("Should have a defined controller", () => {
+        expect(controller).toBeInstanceOf(TodoListController)
+    })
 
-Ejecutar el método que provocará un comportamiento que vamos a probar (Act), y
+    it("Should add a todo item", () => {
+        const todo = {
+            name: "Learn Programming using component based approach",
+            completed: false
+        }
+        controller.todosList = []
 
-Comprobar que la expectativa esperada haya ocurrido (Assert). 
+        controller.addTodo(todo)
+
+        expect(controller.todosList.length).toBe(1)
+        expect(controller.todosList[0]).toEqual(todo)
+    })
+
+    it("Should be mark/unmark as completed a certain todo", () => {
+        const index = 1
+        controller.todosList = [
+            {
+                name: "Learn Programming using component based approach",
+                completed: false
+            },
+            {
+                name: "Learn Machine Learning",
+                completed: false
+            },
+            {
+                name: "Finish Medium article",
+                completed: false
+            }
+        ]
+
+        controller.toggleCheckTodo(index)
+        expect(controller.todosList[index].completed).toBe(true)
+
+        controller.toggleCheckTodo(index)
+        expect(controller.todosList[index].completed).toBe(false)
+    })
+});
+```
+
+Podemos identificar tres secciones en el código de la prueba. Este concepto viene de las siglas AAA o Arrange-Act-Assert, por sus siglas en inglés. En resumen quiere decir:
+ - Preparar las pre-condiciones y entradas.
+ - Ejecutar el método que provocará un comportamiento que vamos a probar, y
+ - Comprobar que el comportamiento esperado haya ocurrido. 
 
 En las líneas 28–43 podemos ver la sección de preparación. Podemos ver que se establecen las variables sobre las cuales luego ejecutaremos y comprobaremos su comportamiento en las secciones siguientes.
 En las líneas 44 y 47 podemos ver la ejecución.
 En las líneas 45 y 48 vemos la sección de comprobación.
 Con nuestra prueba fallando, escribamos el código para pasar.
 
-## ------------------> snippet con componente con check/uncheck
+```
+export class TodoListController {
+    addTodo(todo){
+        this.todosList.push(todo)
+    }
+    toggleCheckTodo(index){
+        this.todosList[index].completed = !this.todosList[index].completed
+    }
+}
+```
 
 La última funcionalidad será la posibilidad de eliminar un item todo. Escribamos este test en la línea 51:
 
