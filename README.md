@@ -1,8 +1,8 @@
 # Boolean curso profesional de frontend nivel básico
 
-Bienvenido al curso gratuito de desarrollo frontend profesional nivel básico. 
+Bienvenido al curso gratuito de desarrollo frontend profesional nivel básico.
 
-El objetivo de este curso es dar una mirada completa sobre el proceso de desarollar una aplicación frontend utilizando el lenguaje *javascript*. 
+El objetivo de este curso es dar una mirada completa sobre el proceso de desarollar una aplicación frontend utilizando el lenguaje *javascript*.
 
 Las librerías utilizadas en este curso fueron seleccionadas no por ser las mejores ni las más populares, sino que por ser las que permitían ilustrar de mejor manera los conceptos escenciales de un proceso de desarollo orientado a la integración continua y los lanzamientos a producción tempranos.
 
@@ -16,12 +16,12 @@ Revisaremos de manera breve los conceptos importantes para seguir este proceso i
 
 Indice de capítulos
 
- - Cápitulo 1: Ambiente de desarollo, TDD , AngularJS y Snapshot Testing.
+ - [Capítulo 1](#capítulo-1-ambiente-de-desarollo-tdd-angularjs-y-snapshot-testing): Ambiente de desarollo, TDD , AngularJS y Snapshot Testing.
 
 
-## Cápitulo 1: Ambiente de desarollo, TDD , AngularJS y Snapshot Testing.
+## Capítulo 1: Ambiente de desarollo, TDD, AngularJS y Snapshot Testing.
 
-En este primer capítulo discutiremos como desarrollar una simple funcionalidad usando la metodología de desarrollo liderado por pruebas (TDD por sus siglas en inglés). 
+En este primer capítulo discutiremos como desarrollar una simple funcionalidad usando la metodología de desarrollo liderado por pruebas (TDD por sus siglas en inglés).
 
 En concreto revisaremos:
  - Configurar un entorno de desarrollo mínimo.
@@ -35,8 +35,8 @@ En concreto revisaremos:
 Para nuestro entorno y proceso de desarollo necesitaremos cumplir los siguientes requisitos:
 
 - Una terminal. (Para windows recomendamos [cmder](http://cmder.net/))
-- NodeJS >= 8.4 a través de NVM
-- Git 
+- NodeJS >= 8.4 instalado a través de NVM. [¿por qué a través de nvm?]
+- Git
 
 Usaremos Git y Github para la posterior integración de un proceso que nos permitirá hacer deploy continuo y generar versiones de la aplicación.
 Partiremos creando la carpeta vacía e iniciando git en ella.
@@ -117,7 +117,7 @@ Construir un código capaz de:
 - cambiar el estado de una tarea de completed a incomplete o viceversa.
 - eliminar una tarea de la lista
 ```
-La lista de tareas consiste en una o más tareas, donde cada tarea tiene 2 propiedades: name y completed; name es el nombre dado a la tarea 
+La lista de tareas consiste en una o más tareas, donde cada tarea tiene 2 propiedades: name y completed; name es el nombre dado a la tarea
 y completed representa si la tarea ya fue realizada o no.
 
 Para poder escribir y correr pruebas unitarias utilizaremos Jest, un completo framework para hacer tests. Una de sus particularidades es que tiene cero-configuración, solo necesitamos seguir 2 convenciones: la carpeta que contendrá la suite de test se debe llamar **__test__** y los archivos con los test deben tener la extensión **.spec.js**, ¡¡¡Super simple!!!
