@@ -127,7 +127,7 @@ Si en un futuro queremos utilizar jest para agregar comportamiento más avanzado
 Lo primero es simplemente escribir nuestra primera prueba considerando el ciclo [“red-green-refactor”](http://blog.cleancoder.com/uncle-bob/2014/12/17/TheCyclesOfTDD.html).
 Escribiremos una prueba unitaria en el archivo `todoList.component.spec.js` dentro del directorio `./__test__/`.
 
-```
+```javascript
 import { TodoListController } from "../src/components/todoList.component"
 
 describe("TodoListController", () => {
@@ -185,7 +185,7 @@ Continuemos con nuestro proceso de diseño...
 Ahora diseñaremos la funcionalidad para agregar un nuevo item al todoList.
 El siguiente test que construiremos está en la linea 14:
 
-```
+```javascript
 import { TodoListController } from "../src/components/todoList.component"
 
 describe("TodoListController", () => {
@@ -217,7 +217,7 @@ Al actualizar nuestros archivos veremos que nuestro nuevo test está efectivamen
 La funcionalidad que considera agregar un array al controlador como propiedad llamada todosList y usar un método addTodo. Notemos cómo seguimos diseñando nuestro código al definir los nombres de las propiedades, la estructura y métodos. 
 Agregamos dos expectativas, después de agregar un todo, esperamos que la longitud de la propiedad aumente en uno y que el todo agregado esté presente en el array.
 
-```
+```javascript
 export class TodoListController {
     addTodo(todo){
         this.todosList.push(todo)
@@ -227,7 +227,7 @@ export class TodoListController {
 
 Ahora que tenemos pasando 2/2 pruebas, la siguiente funcionalidad que diseñaremos es la posibilidad de marcar un cierto to-do como completado. El test relacionado está en la línea 27:
 
-```
+```javascript
 import { TodoListController } from "../src/components/todoList.component"
 
 describe("TodoListController", () => {
@@ -290,7 +290,7 @@ En las líneas 44 y 47 podemos ver la ejecución.
 En las líneas 45 y 48 vemos la sección de comprobación.
 Con nuestra prueba fallando, escribamos el código para pasar.
 
-```
+```javascript
 export class TodoListController {
     addTodo(todo){
         this.todosList.push(todo)
@@ -409,6 +409,8 @@ Nuestra estructura de directorio ahora debería verse así:
 +-- .babelrc
 +-- package.json
 +-- webpack.config.js
+
+
 Necesitamos decirle a nuestro script principal que corra stubby y el server de desarrollo en paralelo. Si bien podemos hacer esto de forma fácil con comandos soportados por sistemas operativos unix, existe un paquete de npm que nos permite hacer esto pero con soporte para otros sistemas como windows. Este paquete se llama npm-run-all.
 Primero lo instalaremos:
 npm install --save-dev npm-run-all
