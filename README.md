@@ -86,7 +86,7 @@ npm-debug.log
 dist
 ```
 
-.babelrc
+**.babelrc**
 
 ```json
 {
@@ -120,32 +120,39 @@ Construir un código capaz de:
 La lista de tareas consiste en una o más tareas, donde cada tarea tiene 2 propiedades: name y completed; name es el nombre dado a la tarea
 y completed representa si la tarea ya fue realizada o no.
 
-Para poder escribir y correr pruebas unitarias utilizaremos Jest, un completo framework para hacer tests. Una de sus particularidades es que tiene cero-configuración, solo necesitamos seguir 2 convenciones: la carpeta que contendrá la suite de test se debe llamar **__test__** y los archivos con los test deben tener la extensión **.spec.js**, ¡¡¡Super simple!!!
+Para poder escribir y correr pruebas unitarias utilizaremos **Jest**, un completo framework para hacer tests. Una de sus particularidades es que tiene cero-configuración, solo necesitamos seguir 2 convenciones: la carpeta que contendrá la suite de test se debe llamar **__test__** y los archivos con los test deben tener la extensión **.spec.js**, ¡¡¡Super simple!!!
 Si en un futuro queremos utilizar jest para agregar comportamiento más avanzado a nuestra suite de tests, este provee [muchas opciones de configuración](https://jest-bot.github.io/jest/docs/configuration.html). Más adelante conversaremos acerca de algunas de estas.
 
 
 Lo primero es simplemente escribir nuestra primera prueba considerando el ciclo [“red-green-refactor”](http://blog.cleancoder.com/uncle-bob/2014/12/17/TheCyclesOfTDD.html).
 Escribiremos una prueba unitaria en el archivo `todoList.component.spec.js` dentro del directorio `./__test__/`.
 
-```
-import { TodoListController } from "../src/components/todoList.component"
+```javascript
+import { TodoListController } from "../src/components/todoList.component";
 
 describe("TodoListController", () => {
     let controller;
 
     beforeEach(() => {
-        controller = new TodoListController()
+        controller = new TodoListController();
     });
 
     it("Should have a defined controller", () => {
-        expect(controller).toBeInstanceOf(TodoListController)
+        expect(controller).toBeInstanceOf(TodoListController);
     });
 });
 ```
 
-Se ve simple verdad?, lo primero es importar el código que vamos a probar. En este punto estamos diseñando nuestro código con código. Pensar en el proceso mental de diseñar/modelar y escribir esas ideas en nuestros test.
+Se ve simple verdad?
+En este punto estamos **diseñando nuestro código con código**.
 
-En este pequeño ejemplo nuestro código ya está siendo diseñado e incluye:
+Hablemos un poco sobre esta idea:
+A menudo cuando diseñamos una funcionalidad estamos acostumbrados a pensar en cuál debería ser el código más correcto para solucionar X problema basados en nuestra experiencia y en los algoritmos que conocemos. Esto no pasa más allá de procesar en nuestros cerebros esa idea o escribirla en un papel y luego escribimos el que será a futuro nuestro código de producción.
+
+El gran problema es que el proceso de probar si la idea que pensé va a funcionar requiere un trabajo extra: Integrar el código en algún framework (o sin framework) para luego integrarlo en una página HTML, correr esta página en un servidor local, verla en un navegador y empezar a interactuar con ella. Una vez superados todos estos obstáculos, recién podemos comenzar a hacer pruebas y en general tendemos a hacer sólo pruebas de "camino feliz".
+La idea de diseñar código con código es poder probarlo sin necesidad de todo ese proceso sumado a poder simular distintos comportamientos y corroborar si nuestro código está preparado para ser integrado en una aplicación que finalmente será la que verá el cliente final para quien estamos desarrollando.
+
+En este pequeño ejemplo podemos ver que nuestro código ya está siendo diseñado e incluye:
 
 - El nombre del archivo y la clase que se debiese exportar en el componente (todoList.component) en la primera línea
 - Un escenario común (línea 6) que se correra por cada uno de nuestros test donde se crea una nueva instancia de nuestro controlador.
@@ -157,7 +164,7 @@ Claramente este test fallará y podemos corroborarlo corriendo el comando `npm t
 
 Entonces, el próximo paso en el ciclo “red-green-refactor” es escribir solo el código necesario para pasar la prueba. Para lograr esto necesitamos crear el archivo con el nombre y ruta que definimos en nuestro test: `src/components/todoList.component`, exportar la clase con el nombre también definido en los test: `TodoListController`.
 
-```
+```javascript
 export class TodoListController {}
 ```
 
@@ -185,7 +192,7 @@ Continuemos con nuestro proceso de diseño...
 Ahora diseñaremos la funcionalidad para agregar un nuevo item al todoList.
 El siguiente test que construiremos está en la linea 14:
 
-```
+```javascript
 import { TodoListController } from "../src/components/todoList.component"
 
 describe("TodoListController", () => {
@@ -217,7 +224,7 @@ Al actualizar nuestros archivos veremos que nuestro nuevo test está efectivamen
 La funcionalidad que considera agregar un array al controlador como propiedad llamada todosList y usar un método addTodo. Notemos cómo seguimos diseñando nuestro código al definir los nombres de las propiedades, la estructura y métodos. 
 Agregamos dos expectativas, después de agregar un todo, esperamos que la longitud de la propiedad aumente en uno y que el todo agregado esté presente en el array.
 
-```
+```javascript
 export class TodoListController {
     addTodo(todo){
         this.todosList.push(todo)
@@ -227,7 +234,7 @@ export class TodoListController {
 
 Ahora que tenemos pasando 2/2 pruebas, la siguiente funcionalidad que diseñaremos es la posibilidad de marcar un cierto to-do como completado. El test relacionado está en la línea 27:
 
-```
+```javascript
 import { TodoListController } from "../src/components/todoList.component"
 
 describe("TodoListController", () => {
@@ -290,7 +297,8 @@ En las líneas 44 y 47 podemos ver la ejecución.
 En las líneas 45 y 48 vemos la sección de comprobación.
 Con nuestra prueba fallando, escribamos el código para pasar.
 
-```
+```javascript
+
 export class TodoListController {
     addTodo(todo){
         this.todosList.push(todo)
@@ -431,21 +439,36 @@ Mocks
 Un mock es un objeto que simula el comportamiento de una dependencia para que el método bajo test quede aislado y se pueda así hacer testing unitario. Generalmente se utilizan para poder testear la colaboración que hay entre el método que le estamos haciendo testing y la dependencia. 
 Esto traducido a código luce de la siguiente manera:
 
-
-
 Nótese el código en las líneas 6 y 9. A esto se le llama mocks. Si se fijan para hacer mock del servicio $http solamente definimos el método get que es el único que utilizamos hasta el momento. Si más adelante extendemos nuestro servicio para que haga otras operaciones como post o put debemos tambien agregar las implementaciones en este mock.
 Tests de integración y la API de Javascript para manejar el DOM
-
-
-
 
 TravisCI
 
 
-Conclusión
-Doing TDD Well
-Test-driven development (TDD) is a simple concept. The TDD cycle is: Write a little bit of test, ensure it fails, write…www.developer.com
-Considering Test-After Development
-In this article, I'll build a solution twice. First, I'll write the code for a "reverser" method, a simple bit of code…www.developer.com
-Mocks Aren't Stubs
-I first came across the term "mock object" a few years ago in the Extreme Programming (XP) community. Since then I've…martinfowler.com
+## Escribiendo una nueva funcionalidad desde los pruebas de integración
+
+Vamos a escribir una nueva funcionalidad pero en esta oportunidad partiremos desde las pruebas de integración, para continuar por sacar unos snapshots del html que vamos a necesitar y finalmente escribiremos pruebas unitarias sobre el código.
+
+Este será el test de integración que crearemos.
+
+```javascript
+import "../../src/index";
+import "angular-mocks";
+import { uirouterScenario } from "angularjs-uirouter-integration-scenarios";
+
+describe("New Todo rendering and interaction on '/newtodo' path", () => {
+    const treeDOMBody = document.querySelectorAll("body")[0];
+    const stateOptions = { stateName: "newtodo" };
+
+    beforeEach(angular.mock.module("App"));
+    beforeEach(uirouterScenario.build());
+    beforeEach(uirouterScenario.loadState(stateOptions));
+
+    afterEach(uirouterScenario.clean());
+
+    it("should disable by default the submit button", () => {
+        const submitButton = treeDOMBody.querySelector("#todo-submit");
+        expect(submitButton.disabled).toBe(true);
+    });
+});
+```
