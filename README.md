@@ -128,7 +128,7 @@ Lo primero es simplemente escribir nuestra primera prueba considerando el ciclo 
 Escribiremos una prueba unitaria en el archivo `todoList.component.spec.js` dentro del directorio `./__test__/`.
 
 ```javascript
-import { TodoListController } from "../src/components/todoList.component";
+import { TodoListController } from "../src/components/todoList.component"
 
 describe("TodoListController", () => {
     let controller;
@@ -298,7 +298,6 @@ En las líneas 45 y 48 vemos la sección de comprobación.
 Con nuestra prueba fallando, escribamos el código para pasar.
 
 ```javascript
-
 export class TodoListController {
     addTodo(todo){
         this.todosList.push(todo)
@@ -417,6 +416,8 @@ Nuestra estructura de directorio ahora debería verse así:
 +-- .babelrc
 +-- package.json
 +-- webpack.config.js
+
+
 Necesitamos decirle a nuestro script principal que corra stubby y el server de desarrollo en paralelo. Si bien podemos hacer esto de forma fácil con comandos soportados por sistemas operativos unix, existe un paquete de npm que nos permite hacer esto pero con soporte para otros sistemas como windows. Este paquete se llama npm-run-all.
 Primero lo instalaremos:
 npm install --save-dev npm-run-all
