@@ -14,9 +14,12 @@ Revisaremos de manera breve los conceptos importantes para seguir este proceso i
 ------ Imagen que logre describir de manera gráfica el proceso de desarrollo ---------
 
 
+
 Indice de capítulos
 
  - [Capítulo 1](#capítulo-1-ambiente-de-desarollo-tdd-angularjs-y-snapshot-testing): Ambiente de desarollo, TDD , AngularJS y Snapshot Testing.
+
+ - [Capítulo 2](#capítulo-2-stubby4node-para-simular-una-api-rest-pruebas-después-del-desarrollo-y-tests-de integración): Stubby4node para simular una API REST, Pruebas después del desarrollo y Tests de Integración.
 
 
 ## Capítulo 1: Ambiente de desarollo, TDD, AngularJS y Snapshot Testing.
@@ -341,10 +344,8 @@ Fíjate en la línea 15 donde definimos un script llamado index.bundle.js , por
 Ahora vamos a escribir una función para el ruteo llamada routes  en el archivo routes.js en el directorio ./src/ . Esta función define la ruta de entrada / para la aplicación y establece la configuración básica para html5mode usando el módulo angular-ui-routrer .
 
 
-
 Vemos la plantilla definida para la ruta en la línea 12. Esto es que el componente registrado en el sistema de módulos de angular debe ser nombrado todoList basado en las convenciones de directivas/componentes de AngularJS. ****nota: Buscar link de domunetación
 Finalmente, también en el ./src/ vamos a crear un index.js . En este archivo vamos a registrar la función de configuración usando la función routes , registraremos nuestro componente y generamos el documento html bajo la directiva ng-app App
-
 
 
 Vemos que estos archivos no fueron creados con TDD ya que en las pruebas unitarias no probamos configuraciones o código sin lógica.****Igual se podría testear la ruta
@@ -354,12 +355,11 @@ Ahora necesitamos un servidor para levantar la aplicación. Para esto vamos a ag
 Nuestro directorio ahora luce así:
 Ahora sí, ejecuta npm start y el navegador debiese abrir nuestra apliación
 
-############################################################################################################################
-##Stubby4node para simular una API REST,  Testing After Development (TAD), Tests de integración e Integración continua con TravisCI
+
+## Capítulo 2: Stubby4node para simular una API REST, Pruebas después del desarrollo y Tests de Integración
 
 En esta oportunidad dejaremos de lado la práctica de TDD, partiremos escribiendo primero la funcionalidad y luego el test asociado. A esto se le llama Testing After Development (TAD por sus siglas en inglés). 
 Siguiendo con nuestra to-do list, ahora agregaremos otro nivel de funcionalidad: Servicios de AngularJS para comunicarnos con una API REST . La definición de clase para crear un servicio es la siguiente:
-
 
 
 A diferencia de la clase TodoList que desarrollamos en el artículo anterior, esta vez definimos un constructor. AngularJS nos da la posibilidad de usar el patrón de inyección de dependencias para inyectar a nuestra instancia algún servicio del core y otro tipo de cosas como factories, filtros, constantes y/o values a través del constructor de la clase. 
@@ -441,16 +441,51 @@ Un mock es un objeto que simula el comportamiento de una dependencia para que el
 Esto traducido a código luce de la siguiente manera:
 
 Nótese el código en las líneas 6 y 9. A esto se le llama mocks. Si se fijan para hacer mock del servicio $http solamente definimos el método get que es el único que utilizamos hasta el momento. Si más adelante extendemos nuestro servicio para que haga otras operaciones como post o put debemos tambien agregar las implementaciones en este mock.
+
 Tests de integración y la API de Javascript para manejar el DOM
 
-TravisCI
 
+## Capítulo 3: Escribiendo una nueva funcionalidad desde las pruebas unitaras hasta las de integración
 
-## Escribiendo una nueva funcionalidad desde los pruebas de integración
+Escribiremos pruebas unitarias a una unidad de código que resuelve el siguiente requerimiento:
+```
+- Crear una nueva tarea que tenga los campos `nombre` y `descripción`.
+- Existe sólo un campo requerido: `nombre`.
+- Botón guardar debe estar deshabilitado si el campo requerido no ha sido ingresado.
+- Al sacar el foco sobre el input requerido debe desplegarse un mensaje que diga al usuario que no olvide escribir sobre el input obligatorio.
+- La descripción debe tener como máximo 300 caracteres.
+```
+Escribiremos un test unitario para definir el componente que cumplirá con los requerimientos dados:
 
-Vamos a escribir una nueva funcionalidad pero en esta oportunidad partiremos desde las pruebas de integración, para continuar por sacar unos snapshots del html que vamos a necesitar y finalmente escribiremos pruebas unitarias sobre el código.
+```javascript
+import { TodoFormController } from "../../src/components/todoForm.component";
 
-Este será el test de integración que crearemos.
+describe("TodoFormController", () => {
+    let controller;
+
+    beforeEach(() => {
+        controller = new TodoFormController();
+    });
+
+    it("Should have a defined controller and default values for new todo", () => {
+        expect(controller).toBeInstanceOf(TodoFormController);
+        expect(controller.newTodo.name).toEqual("");
+        expect(controller.newTodo.description).toEqual("")
+    });
+});
+```
+
+```javascript
+export class TodoFormController {
+    constructor() {
+        this.newTodo = {
+            name: "",
+            description: ""
+        };
+    }
+}
+```
+Con este código ya estamos pasando la primera prueba unitaria. Ahora escribiremos un test de integración:
 
 ```javascript
 import "../../src/index";
@@ -471,5 +506,157 @@ describe("New Todo rendering and interaction on '/newtodo' path", () => {
         const submitButton = treeDOMBody.querySelector("#todo-submit");
         expect(submitButton.disabled).toBe(true);
     });
+
+    it("should enable the submit button only if the required fields was filled", () => {
+        const formElement = uirouterScenario.getFormFromState("newtodoForm");
+        const submitButton = treeDOMBody.querySelector("#todo-submit");
+        const requiredElements = treeDOMBody.querySelectorAll("[required]");
+
+        Array.from(requiredElements).forEach((field) => {
+            formElement[field.name].$setViewValue("somevalue");
+        });
+
+        expect(submitButton.disabled).toBe(false);
+    });
 });
 ```
+Necesitamos un estado registrado en el `$stateProvider` llamado "newtodo", necesitamos que exista en un elemento html con el id `todo-submit` y finalemente que esté deshabilitado. Escribamos el código necesario:
+
+Registramos la nueva ruta:
+```javascript
+import "@uirouter/angularjs";
+
+export function routes($stateProvider, $locationProvider) {
+    $locationProvider.html5Mode({
+        enabled: true,
+        requireBase: false
+    })
+    $stateProvider
+        .state("home", {
+            url: "/",
+            component: "todoList",
+            resolve: {
+                todosList: TodoService => TodoService.getTodos()
+            }
+        })
+        .state("newtodo", {
+            url: "/newtodo",
+            component: "todoForm"
+        })
+}
+```
+
+Creamos la definición de componente para "todoForm" junto a su template y lo registramos en angular
+
+```javascript
+import template from "./todoForm.component.html";
+
+export class TodoFormController {
+    constructor() {
+        this.newTodo = {
+            name: "",
+            description: ""
+        };
+    }
+}
+export const TodoFormComponent = {
+    template,
+    controller: TodoFormController
+}
+```
+
+```html
+<form name="$ctrl.newtodoForm">
+    <button id="todo-submit" disabled>Save</button>
+</form>
+```
+
+```javascript
+import angular from "angular";
+import { routes } from "./routes";
+import { TodoListComponent } from "./components/todoList.component";
+import { TodoFormComponent } from "./components/todoForm.component";
+import { TodoService } from "./services/todo.service";
+
+angular
+    .module("App", [
+        "ui.router"
+    ])
+    .config(routes);
+    .constant("BASE_URL", "http://localhost:5000/api");
+    .component("todoList", TodoListComponent);
+    .component("todoForm", TodoFormComponent);
+    .service("TodoService", TodoService);
+
+angular.bootstrap(document, ["App"]);
+```
+Haciendo estos pasos ya pasaemos la primera prueba de integración. Ahora debemos refactorizar en este caso el template del componente que es el que tendrá la lógica de un formulario de angularjs. Una explicación detallada sobre como funcionan los forms en angularjs puede ser encontrada [acá](https://docs.angularjs.org/guide/forms).
+
+```html
+<form name="$ctrl.newtodoForm">
+    <p>
+        <label for="todo-name">Name</label>
+        <input id="todo-name" name="todoName" ng-model="$ctrl.newTodo.name" required>
+    </p>
+    <p>
+        <label for="todo-description">Name</label>
+        <input id="todo-description" name="todoDescription" ng-model="$ctrl.newTodo.description">
+    </p>
+    <p>
+        <button id="todo-submit" ng-disabled="$ctrl.newtodoForm.$invalid">Save</button>
+    </p>
+</form>
+```
+Los puntos clave en este código son el atributo `name` en el formulario que está asociado a una variable del
+controlador. Esto creará un objeto que contendrá una serie de atributos y métodos que nos servirán para realizar validaciones, crear mensajes de error y generar clases que nos servirán para el manejo de formularios.
+
+Usaremos la directiva `ng-disabled` para cumplir el requerimiento de que el botón esté deshabilitado
+Ya tenemos el código suficiente como para crear un snapshot.
+
+```javascript
+import template from "../../src/components/todoForm.component.html";
+
+describe("Render todoForm", () => {
+    it("newTodo form with name data filled and submit enabled", () => {
+        const componentDefinition = {
+            template,
+            $ctrl: {
+                newTodo: {
+                    name: "data"
+                }
+            }
+        };
+        expect(componentDefinition).toMatchSnapshot();
+    });
+    it("newTodo form with name data empty and submit disabled", () => {
+        const componentDefinition = {
+            template,
+            $ctrl: {
+                newTodo: {
+                    name: ""
+                }
+            }
+        };
+        expect(componentDefinition).toMatchSnapshot();
+    });
+});
+```
+Nos falta escribir un nuevo test de integración que corrobore que al quitar el foco sobre el input obligatorio aparezca un mensaje.
+
+
+
+## Capítulo 3: Deploy automatizado para salida tempranas a producción a través del sistema de Integración Continua
+
+  Mostrar como lograr salir a producción de manera automatizada a través de scripts que corren en el sistema
+  de integración continua sólo cuando el código es mezclado en la rama master a través de PR's. Mostrar  
+
+## Capítulo 4: Test funcionales
+
+
+## Capítulo 5: Cambiar o remover funcionalidades con confianza gracias a las pruebas escritas
+
+  Mostrar con un ejemplo como removemos funcionalidad que cambió ya sea por requerimiento o porque
+  estamos refactorizando o derechamente encontramos código que ya no aplica.
+
+
+## Capítulo 6: Conceptos más avanzados de testing y la generación de recetas de testing.
