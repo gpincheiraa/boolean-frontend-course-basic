@@ -1,4 +1,4 @@
-# Boolean curso profesional de frontend nivel básico
+# Boolean curso profesional de Frontend nivel básico
 
 Bienvenido al curso gratuito de desarrollo frontend profesional nivel básico.
 
@@ -17,9 +17,9 @@ Revisaremos de manera breve los conceptos importantes para seguir este proceso i
 
 Indice de capítulos
 
- - [Capítulo 1](#capítulo-1-ambiente-de-desarollo-tdd-angularjs-y-snapshot-testing): Ambiente de desarollo, TDD , AngularJS y Snapshot Testing.
+ - [Capítulo 1](#capítulo-1-ambiente-de-desarollo-tdd-angularjs-y-snapshot-testing): Ambiente de desarollo, TDD, AngularJS y Snapshot Testing.
 
- - [Capítulo 2](#capítulo-2-stubby4node-para-simular-una-api-rest-pruebas-después-del-desarrollo-y-tests-de integración): Stubby4node para simular una API REST, Pruebas después del desarrollo y Tests de Integración.
+ - [Capítulo 2](#capítulo-2-stubby4node-para-simular-una-api-rest-pruebas-después-del-desarrollo-y-tests-de-integración): Stubby4node para simular una API REST, Pruebas después del desarrollo y Tests de Integración.
 
 
 ## Capítulo 1: Ambiente de desarollo, TDD, AngularJS y Snapshot Testing.
@@ -313,47 +313,124 @@ export class TodoListController {
 
 La última funcionalidad será la posibilidad de eliminar un item todo. Escribamos este test en la línea 51:
 
-## -------------------> snippet de test para borrar todo
+```javascript
+import { TodoListController } from "../../src/components/todoList.component";
 
-Esta es una prueba más elaborada. Podemos identificar la sección de preparación en las líneas 52–69, pero mira especialmente las líneas 67–68.
-todosListOriginalSize  fue creada para comparar en las expectativas que el largo del todoList disminuyó.
+describe("TodoListController", () => {
+    let controller;
 
-todoTargetName  fue creada para obtener el nombre del todo objetivo, el que será usado para revisar en las expectativas que el item no está presente en todosList.
+    beforeEach(() => {
+        controller = new TodoListController();
+    })
 
-todoFinderen la línea 69 es una función que revisa si cierto todo existe comparando con todoTargetName.
+    it("Should have a defined controller", () => {
+        expect(controller).toBeInstanceOf(TodoListController);
+    })
 
-El código para pasar las pruebas es:
+    it("Should add a todo item", () => {
+        const todo = {
+            name: "Learn Programming using component based approach",
+            completed: false
+        };
+        controller.todosList = [];
 
-## ------------------> snippet con componente que elimina todo
+        controller.addTodo(todo);
 
-Felicitaciones! 4 de 4 pruebas pasando. Nuestras funcionalidades están completas. Como conclusión podemos decir que ganamos dos cosas:
-Las pruebas actúan como un “Contrato para los desarrolladores” Esto es, que en el futuro, cuando otros desarrolladores o nosotros mismos modifiquemos el código sin usar TDD e introducimos cambios en el comportamiento correcto, las pruebas que se aseguran de la calidad del comportamiento fallarán y podremos detectarlo.
-Si encontramos manualmente un caso que no está considerado en nuestras pruebas, o en el caso que el cliente descubre un caso en el que nuestra aplicación falla, siempre podemos agregar un nuevo test y asegurarnos que el código para la nuevo caso no rompe otras funcionalidades probadas y aceptadas.
+        expect(controller.todosList.length).toBe(1);
+        expect(controller.todosList[0]).toEqual(todo);
+    });
 
-Entonces, el siguiente paso es crear la Interfaz de usuario que use las funcionalidades diseñadas y probadas.
-Agregando UI, registrando componentes y rutas
-Ya tenemos la funcionalidad, pero no tenemos la interfaz. Lo primero es crear una plantilla html para el todoList.component  llamada todoList.component.html  bajo el directorio ./src/components  .
+    it("Should be mark/unmark as completed a certain todo", () => {
+        const index = 1;
+        controller.todosList = [
+            {
+                name: "Learn Programming using component based approach",
+                completed: false
+            },
+            {
+                name: "Learn Machine Learning",
+                completed: false
+            },
+            {
+                name: "Finish Medium article",
+                completed: false
+            }
+        ];
+
+        controller.toggleCheckTodo(index);
+        expect(controller.todosList[index].completed).toBe(true);
+
+        controller.toggleCheckTodo(index);
+        expect(controller.todosList[index].completed).toBe(false);
+    });
+
+    it("Should be delete a todo", () => {
+        const index = 0;
+        controller.todosList = [
+            {
+                name: "Learn Programming using component based approach",
+                completed: false
+            },
+            {
+                name: "Learn Machine Learning",
+                completed: false
+            },
+            {
+                name: "Finish Medium article",
+                completed: false
+            }
+        ];
+        const todosListOriginalSize = controller.todosList.length;
+        const todoTargetName = controller.todosList[index].name;
+        const todoFinder = (todo) => todo.name === todoTargetName;
+
+        expect(controller.todosList.some(todoFinder)).toBe(true);
+
+        controller.deleteTodo(index);
+
+        expect(controller.todosList.length).toEqual(todosListOriginalSize - 1);
+        expect(controller.todosList.some(todoFinder)).toBe(false);
+    });
+});
+```
+
+Esta es una prueba más elaborada. Podemos identificar la sección de preparación en las líneas 52–69, pero mira especialmente las líneas 67–69:
+
+`todosListOriginalSize` El largo de la lista de tareas antes de ser modificada. Nos servirá para luego comparar una vez eliminada una tarea.
+
+`todoTargetName` fue creada para obtener el nombre la tarea objetivo, el que será usado para revisar en las pruebas que este ya no está presente en la lista.
+
+`todoFinder` función genérica que será utilizada en conjunto con `Array.some` para revisar si la tarea está presente o no en la lista.
+
+El código para pasar estas pruebas es:
+
+```javascript
+export class TodoListController {
+    constructor() {
+        this.todosList = [];
+    }
+    addTodo(todo){
+        this.todosList.push(todo);
+    }
+    toggleCheckTodo(index){
+        this.todosList[index].completed = !this.todosList[index].completed;
+    }
+    deleteTodo(index){
+        this.todosList.splice(index, 1);
+    }
+}
+```
+Lo logramos! 4/4 pruebas correctas. Nuestras funcionalidades están completas.
+Como conclusión a este proceso podemos decir que hemos ganado dos cosas:
+
+1.- Las pruebas actúan como un “Contrato para los desarrolladores”, osea que en el futuro, cuando otros desarrolladores o nosotros mismos modifiquemos el código y en el peor de los casos introducimos un comportamiento no adecuado, las pruebas fallarán y nos daremos por enterados para refactorizar nuestro código.
+2.- Si encontramos manualmente un caso que no está considerado en nuestras pruebas, o en el caso que el cliente descubre un caso en el que nuestra aplicación falla, siempre podemos agregar un nuevo test y asegurarnos que el código para el nuevo caso no corrompe otras funcionalidades ya probadas y aceptadas.
+
+
+### Integrando nuestro código a AngularJS
 
 
 
-Necesitaremos un index.html donde mostrar nuestra aplicación. Agrega este archivo en la carpeta ./src/ 
-
-
-
-Fíjate en la línea 15 donde definimos un script llamado index.bundle.js , por ahora, como adelanto podemos decir que este archivo será usado como punto de entrada para la aplicación generada por webpack y servida por el paquetewebpack-dev-server .
-Ahora vamos a escribir una función para el ruteo llamada routes  en el archivo routes.js en el directorio ./src/ . Esta función define la ruta de entrada / para la aplicación y establece la configuración básica para html5mode usando el módulo angular-ui-routrer .
-
-
-Vemos la plantilla definida para la ruta en la línea 12. Esto es que el componente registrado en el sistema de módulos de angular debe ser nombrado todoList basado en las convenciones de directivas/componentes de AngularJS. ****nota: Buscar link de domunetación
-Finalmente, también en el ./src/ vamos a crear un index.js . En este archivo vamos a registrar la función de configuración usando la función routes , registraremos nuestro componente y generamos el documento html bajo la directiva ng-app App
-
-
-Vemos que estos archivos no fueron creados con TDD ya que en las pruebas unitarias no probamos configuraciones o código sin lógica.****Igual se podría testear la ruta
-También necesitamos algo de datos para probar la aplicación. Por ahora vamos a agregar una lista directamente en el todosList.component.js en la propiedad todoList.  De paso con esto comprobaremos el constructor de la clase. 
-Agregando webpack-dev-server:
-Ahora necesitamos un servidor para levantar la aplicación. Para esto vamos a agregar el archivo webpack.config.js en la raíz del directorio
-Nuestro directorio ahora luce así:
-Ahora sí, ejecuta npm start y el navegador debiese abrir nuestra apliación
 
 
 ## Capítulo 2: Stubby4node para simular una API REST, Pruebas después del desarrollo y Tests de Integración
