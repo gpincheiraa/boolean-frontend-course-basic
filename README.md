@@ -75,9 +75,9 @@ Creemos los siguientes 3 archivos en la raíz del repositorio:
 ```
 Hay 2 cosas importantes que notar en el archivo `package.json`:
 
-  - scripts: Son los scripts de npm que se corren a través del comando `npm run nombre_script`. El script test también puede correrse utilizando `npm test`. Esta diferencia tiene que ver porque existen [scripts por defecto](https://docs.npmjs.com/misc/scripts#description) dentro de los cuales test es uno de ellos. Los comandos ejecutados a través de los npm scripts por ejemplo `jest` son archivos de linea de comandos instalados a través de los paquetes de dependencias. Si queremos ver estos archivos, una vez instaladas las dependencias, podemos encontrarlos en la ruta `node_modules/.bin/`.
+  - `scripts`: Son los scripts de npm que se corren a través del comando `npm run nombre_script`. El script test también puede correrse utilizando `npm test`. Esta diferencia tiene que ver porque existen [scripts por defecto](https://docs.npmjs.com/misc/scripts#description) dentro de los cuales test es uno de ellos. Los comandos ejecutados a través de los npm scripts (por ejemplo `jest`) son archivos de linea de comandos instalados a través de los paquetes de dependencias. Si queremos ver estos archivos, una vez instaladas las dependencias, podemos encontrarlos en la ruta `node_modules/.bin/`.
 
-  - devDependencies: Son las dependencias de desarrollo de nuestro proyecto. Estos paquetes nos serviran para ejecutar comandos que nos serán de utilidad por ejemplo `http-server` que nos servirá para correr un servidor local donde veremos en el navegador el informe de cobertura de los test.
+  - `devDependencies`: Son las dependencias de desarrollo de nuestro proyecto. Estos paquetes nos serviran para ejecutar comandos que nos serán de utilidad por ejemplo `http-server` que nos servirá para correr un servidor local donde veremos en el navegador el informe de cobertura de los test.
 
 
 **.gitignore**
@@ -97,7 +97,31 @@ dist
 }
 ```
 
-##CAMBIAR EXPLICACIÓN DE BABEL EXPLICANDO POR EJEMPLO EL STAGE-3 Y SOLAMENTE MENCIONAR CUALES SON LAS FUNCIONALIDADES QUE USAREMOS EN ESTE PRIMER Capítulo
+## Del porque usar Babel y entendiendo como Ecmascript es un estándar en constante desarrollo  
+Primero sería bueno hacer una aclaración: ¿Ecmascript?, ¿Javascript?. ¿Qué son? ¿Cómo se relacionan?.
+La respuesta a estas preguntas se puede resumir en la definición de que es Javascript.
+
+> Javascript: Es un lenguaje de scripting multi-paradigma especificado a través del estándar Ecmascript.
+
+Entonces Ecmascript es el estándar que define cuales serán las funcionalidades y el comportamiento del lenguaje y Javascript es la implementación de este. Cabe destacar que quien se encarga de darle el carácter de estándar es la asociación internacional de estándares [Ecma International](http://www.ecma-international.org/).
+
+Para llevar a cabo esta tarea de estandarización es necesario un proceso que garantice la calidad de las nuevas versiones, la discusión sobre que nuevas funcionalidades deben ser parte de una nueva versión y cuáles no. La historia se remonta a 1997 cuando se publica la primera versión y continúa hasta nuestros días donde el estándar sigue evolucionando. Si revisamos [el historial de publicaciones del estándar](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Language_Resources) podemos hacer algunas observaciones como que no existe la versión 4; y que entre la versión 3 y la 5 hay 10 años de diferencia.
+Lo más llamativo es lo rápido que ha evolucionado el lenguaje a partir de la quinta edición y esto se debe a las mejoras que se introdujeron al proceso: Se pasó de un proceso basado en e-mails y "conversaciones" a uno [totalmente abierto y democrático a través de Github](https://github.com/tc39/ecma262/blob/master/CONTRIBUTING.md).
+De este proceso se desprenden distintas [etapas de "maduración"](https://tc39.github.io/process-document/) desde que una nueva versión es propuesta hasta que esta es publicada oficialmente.
+
+Estas etapas las podemos resumir en:
+
+- `stage-0`:
+- `stage-1`:
+- `stage-2`:
+- `stage-3`:
+- `stage-4`:
+
+El papel que juega [Babel](https://babeljs.io/) en el desarrolo moderno de software utilizando javascipt es el de servir como herramienta de compilación para dar compatibilidad a los interpretes de javascript (principalmente los navegadores) sobre nuevas funcionalidades que aún no han sido lanzadas oficialmente. Por lo tanto a través de Babel podemos agregar a nuestro código funcionalidades que aún se encuentran trabajándose entre el `stage-0` hasta el `stage-3`. La posibilidad de hacer esto a logrado que el lenguaje avance a pasos agigantados siendo cada vez mejor refinado ya que permite que cualquier persona en el mundo pueda probar las funcionalidades que aún no han sido lanzadas y entregar retroalimentación al estándar para descartar o seguir adelante con alguna X funcionalidad.
+
+
+
+## Control de versiones
 
 Ahora agregamos esos archivos y creamos el commit correspondiente:
 
