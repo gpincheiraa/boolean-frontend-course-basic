@@ -111,11 +111,16 @@ De este proceso se desprenden distintas [etapas de "maduración"](https://tc39.g
 
 Estas etapas las podemos resumir en:
 
-- `stage-0`:
-- `stage-1`:
-- `stage-2`:
+- `stage-0`: Esta etapa es llamada "strawman" (que quiere decir "hombre de paja"). Se podría decir que este estado es "aspiracional" en el cuál sólo los [miembros registrados](https://ecma-international.org/memento/register_TC39_Royalty_Free_Task_Group.php) en el estándar Ecma TC39 pueden generar una propuesta que incluya alguna nueva funcionalidad o cambio al estándar.
+
+- `stage-1`: En esta etapa la nueva propuesta tiene al menos definida los casos bordes, ejemplos de funcionamiento y una API bien definida al menos a alto nivel.
+
+- `stage-2`: 
+
 - `stage-3`:
+
 - `stage-4`:
+
 
 El papel que juega [Babel](https://babeljs.io/) en el desarrolo moderno de software utilizando javascipt es el de servir como herramienta de compilación para dar compatibilidad a los interpretes de javascript (principalmente los navegadores) sobre nuevas funcionalidades que aún no han sido lanzadas oficialmente. Por lo tanto a través de Babel podemos agregar a nuestro código funcionalidades que aún se encuentran trabajándose entre el `stage-0` hasta el `stage-3`. La posibilidad de hacer esto a logrado que el lenguaje avance a pasos agigantados siendo cada vez mejor refinado ya que permite que cualquier persona en el mundo pueda probar las funcionalidades que aún no han sido lanzadas y entregar retroalimentación al estándar para descartar o seguir adelante con alguna X funcionalidad.
 
