@@ -14,7 +14,6 @@ Revisaremos de manera breve los conceptos importantes para seguir este proceso i
 ------ Imagen que logre describir de manera gráfica el proceso de desarrollo ---------
 
 
-
 Indice de capítulos
 
  - [Capítulo 1](#capítulo-1-ambiente-de-desarollo-tdd-angularjs-y-snapshot-testing): Ambiente de desarollo, TDD, AngularJS y Snapshot Testing.
@@ -99,18 +98,26 @@ Estas etapas las podemos resumir en:
 
 - `stage-2 "draft"`: En esta etapa se describen la sintáxis y la semántica usando un [lenguaje formal](https://www.ecma-international.org/ecma-262/6.0/). La descripción debe ser lo más completa posible pero de todas maneras pueden existir tareas pendientes y anotaciones. Otro requisito en esta etapa es el de proveer a lo menos 2 implementaciones de la nueva funcionalidad.
 
-- `stage-3 "candidate"`: 
+- `stage-3 "candidate"`:
 
 - `stage-4 "finished"`:
 
 
 El papel que juega [Babel](https://babeljs.io/) en el desarrolo moderno de software utilizando javascipt es el de servir como herramienta de compilación para dar compatibilidad a los interpretes de javascript (principalmente los navegadores) sobre nuevas funcionalidades que aún no han sido lanzadas oficialmente. Por lo tanto a través de Babel podemos agregar a nuestro código funcionalidades que aún se encuentran trabajándose entre el `stage-1` hasta el `stage-3`. La posibilidad de hacer esto a logrado que el lenguaje avance a pasos agigantados siendo cada vez mejor refinado ya que permite que cualquier persona en el mundo pueda probar las funcionalidades que aún no han sido lanzadas y entregar retroalimentación al estándar para descartar o seguir adelante con alguna X funcionalidad.
 
-Dicho todo esto, agreguemos a nuestra raíz un a
+Dicho todo esto, agregaremos a nuestra raíz un archivo `.babelrc` que contendrá la configuración de Babel.
 
+**.babelrc**
+
+```json
+{
+  "presets": [ "es2015", "stage-3"]
+}
+```
 
 ## Control de versiones
 
+Lo primero será especificar a git cuáles son los archivos que no formarán parte del control de versiones incluyendo un archivo `.gitignore` en la raíz del repositorio.
 
 **.gitignore**
 
