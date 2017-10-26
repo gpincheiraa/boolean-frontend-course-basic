@@ -79,24 +79,6 @@ Hay 2 cosas importantes que notar en el archivo `package.json`:
 
   - `devDependencies`: Son las dependencias de desarrollo de nuestro proyecto. Estos paquetes nos serviran para ejecutar comandos que nos serán de utilidad por ejemplo `http-server` que nos servirá para correr un servidor local donde veremos en el navegador el informe de cobertura de los test.
 
-
-**.gitignore**
-
-```git
-node_modules
-coverage
-npm-debug.log
-dist
-```
-
-**.babelrc**
-
-```json
-{
-  "presets": [ "es2015", "stage-3"]
-}
-```
-
 ## Del porque usar Babel y entendiendo como Ecmascript es un estándar en constante desarrollo  
 Primero sería bueno hacer una aclaración: ¿Ecmascript?, ¿Javascript?. ¿Qué son? ¿Cómo se relacionan?.
 La respuesta a estas preguntas se puede resumir en la definición de que es Javascript.
@@ -111,22 +93,33 @@ De este proceso se desprenden distintas [etapas de "maduración"](https://tc39.g
 
 Estas etapas las podemos resumir en:
 
-- `stage-0`: Esta etapa es llamada "strawman" (que quiere decir "hombre de paja"). Se podría decir que este estado es "aspiracional" en el cuál sólo los [miembros registrados](https://ecma-international.org/memento/register_TC39_Royalty_Free_Task_Group.php) en el estándar Ecma TC39 pueden generar una propuesta que incluya alguna nueva funcionalidad o cambio al estándar.
+- `stage-0 "strawman"`: Se podría decir que en este momento la propuesta no es más que "aspiracional" en el cuál sólo los [miembros registrados](https://ecma-international.org/memento/register_TC39_Royalty_Free_Task_Group.php) en el estándar Ecma TC39 pueden generar una propuesta que incluya alguna nueva funcionalidad o cambio al estándar.
 
-- `stage-1`: En esta etapa la nueva propuesta tiene al menos definida los casos bordes, ejemplos de funcionamiento y una API bien definida al menos a alto nivel.
+- `stage-1 "proposal"`: En esta etapa la nueva propuesta tiene al menos definidos los casos bordes, ejemplos de su funcionamiento y una API de alto nivel bien definida. También es importante que en esta etapa se planteen los desafíos y discusiones respecto de los algoritmos, las abstracciones y la semántica de la propuesta. Por último se define un "Champion" u encargado de avanzar en la integración hacia el documento de estándar.
 
-- `stage-2`: 
+- `stage-2 "draft"`: En esta etapa se describen la sintáxis y la semántica usando un [lenguaje formal](https://www.ecma-international.org/ecma-262/6.0/). La descripción debe ser lo más completa posible pero de todas maneras pueden existir tareas pendientes y anotaciones. Otro requisito en esta etapa es el de proveer a lo menos 2 implementaciones de la nueva funcionalidad.
 
-- `stage-3`:
+- `stage-3 "candidate"`: 
 
-- `stage-4`:
+- `stage-4 "finished"`:
 
 
-El papel que juega [Babel](https://babeljs.io/) en el desarrolo moderno de software utilizando javascipt es el de servir como herramienta de compilación para dar compatibilidad a los interpretes de javascript (principalmente los navegadores) sobre nuevas funcionalidades que aún no han sido lanzadas oficialmente. Por lo tanto a través de Babel podemos agregar a nuestro código funcionalidades que aún se encuentran trabajándose entre el `stage-0` hasta el `stage-3`. La posibilidad de hacer esto a logrado que el lenguaje avance a pasos agigantados siendo cada vez mejor refinado ya que permite que cualquier persona en el mundo pueda probar las funcionalidades que aún no han sido lanzadas y entregar retroalimentación al estándar para descartar o seguir adelante con alguna X funcionalidad.
+El papel que juega [Babel](https://babeljs.io/) en el desarrolo moderno de software utilizando javascipt es el de servir como herramienta de compilación para dar compatibilidad a los interpretes de javascript (principalmente los navegadores) sobre nuevas funcionalidades que aún no han sido lanzadas oficialmente. Por lo tanto a través de Babel podemos agregar a nuestro código funcionalidades que aún se encuentran trabajándose entre el `stage-1` hasta el `stage-3`. La posibilidad de hacer esto a logrado que el lenguaje avance a pasos agigantados siendo cada vez mejor refinado ya que permite que cualquier persona en el mundo pueda probar las funcionalidades que aún no han sido lanzadas y entregar retroalimentación al estándar para descartar o seguir adelante con alguna X funcionalidad.
 
+Dicho todo esto, agreguemos a nuestra raíz un a
 
 
 ## Control de versiones
+
+
+**.gitignore**
+
+```git
+node_modules
+coverage
+npm-debug.log
+dist
+```
 
 Ahora agregamos esos archivos y creamos el commit correspondiente:
 
@@ -766,3 +759,10 @@ Nos falta escribir un nuevo test de integración que corrobore que al quitar el 
 
 
 ## Capítulo 6: Conceptos más avanzados de testing y la generación de recetas de testing.
+
+
+
+
+Referencias:
+- http://exploringjs.com/es2016-es2017/ch_tc39-process.html
+-
